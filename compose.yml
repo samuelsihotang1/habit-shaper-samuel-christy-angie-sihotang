@@ -1,0 +1,121 @@
+# `docker compose up --build` from this folder starts everything.
+# Settings come from backend/.env (backend/.env.example); APP_PORT from a .env
+# next to this file. Neither is required. Secrets are never defaulted here:
+# `secrets` generates any that backend/.env leaves unset, and the other
+# services read them as files.
+name: habit-shaper
+
+services:
+  # One-shot, before anything that reads a secret (scripts/generate-secrets.sh).
+  secrets:
+    image: alpine:3.24
+    # No `environment:` beside it: that would override what backend/.env sets.
+    env_file:
+      - path: ./backend/.env
+        required: false
+    volumes:
+      - secrets:/secrets
+      - ./scripts/generate-secrets.sh:/generate-secrets.sh:ro
+    command: ["sh", "/generate-secrets.sh"]
+
+  db:
+    image: mysql:9.7
+    environment:
+      MYSQL_DATABASE_FILE: /secrets/mysql_database
+      MYSQL_USER_FILE: /secrets/mysql_user
+      MYSQL_PASSWORD_FILE: /secrets/mysql_password
+      MYSQL_ROOT_PASSWORD_FILE: /secrets/mysql_root_password
+    volumes:
+      - db-data:/var/lib/mysql
+      - secrets:/secrets:ro
+      # Runs only when db-data is empty: creates the database the test suite wipes.
+      - ./db/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      # TCP on purpose: during first-boot init MySQL runs with networking off,
+      # so this only passes once the real server is up.
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p\"$$(cat /secrets/mysql_root_password)\" --silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 20s
+    depends_on:
+      secrets:
+        condition: service_completed_successfully
+
+  # Rate-limit counters only (backend/src/plugins/rate-limit.ts): nothing to keep across its restarts.
+  redis:
+    image: redis:8.10-alpine
+    command: ["sh", "-c", "exec docker-entrypoint.sh redis-server --requirepass \"$$(cat /secrets/redis_password)\" --save '' --appendonly no"]
+    volumes:
+      - secrets:/secrets:ro
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli -a \"$$(cat /secrets/redis_password)\" --no-auth-warning ping | grep -q PONG"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+    depends_on:
+      secrets:
+        condition: service_completed_successfully
+
+  backend:
+    build:
+      context: ./backend
+    env_file:
+      - path: ./backend/.env
+        required: false
+    # Wins over backend/.env: its HOST and PORT are for running outside Docker,
+    # and the *_FILE values replace its DATABASE_URL and APP_KEY (docker-entrypoint.sh).
+    environment:
+      DATABASE_URL_FILE: /secrets/database_url
+      REDIS_URL_FILE: /secrets/redis_url
+      APP_KEY_FILE: /secrets/app_key
+      HOST: 0.0.0.0
+      PORT: 3000
+    volumes:
+      - secrets:/secrets:ro
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/api/health').then(r => process.exit(r.ok ? 0 : 1), () => process.exit(1))"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 15s
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "${APP_PORT:-8080}:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # Not started by `up`. Run with: docker compose run --rm backend-test
+  backend-test:
+    profiles: [test]
+    build:
+      context: ./backend
+      target: test
+    environment:
+      DATABASE_URL_FILE: /secrets/test_database_url
+      # Only the Redis test reads it: every other test counts in memory, per app.
+      TEST_REDIS_URL_FILE: /secrets/test_redis_url
+      APP_KEY_FILE: /secrets/app_key
+    volumes:
+      - secrets:/secrets:ro
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+volumes:
+  db-data:
+  # APP_KEY and the MySQL and Redis passwords. Deleting it alone orphans db-data and every MFA secret.
+  secrets:
