@@ -1,0 +1,4 @@
+# .env stays in the build context: `npm run build` in the image reads its VITE_* values.
+node_modules
+dist
+*.log

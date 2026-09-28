@@ -1,0 +1,53 @@
+@import 'tailwindcss';
+
+/*
+ * The whole palette and type scale, from the Haptive habit tracker brand
+ * guideline (docs/design/README.md). Components use these names (bg-brand,
+ * text-ink-muted…), never a raw Tailwind colour.
+ */
+@theme {
+  --color-brand: #feba33;
+  --color-brand-strong: #f2a516;
+  --color-brand-soft: #fdf5e4;
+  --color-canvas: #f5f6f7;
+  --color-surface: #ffffff;
+  --color-night: #0d0d0d;
+  --color-night-soft: #262626;
+  --color-line: #eaebed;
+  --color-ink: #0d0d0d;
+  --color-ink-muted: #6b6b70;
+  --color-danger: #f04438;
+  --color-danger-soft: #fee4e2;
+  --color-success: #12b76a;
+  --color-success-soft: #d1fadf;
+
+  /* Habit icon bubbles; never text colours. */
+  --color-accent-orange: #ff8a3d;
+  --color-accent-green: #22c55e;
+  --color-accent-purple: #a855f7;
+  --color-accent-red: #ef4444;
+  --color-accent-teal: #14b8a6;
+  --color-accent-pink: #ec4899;
+  --color-accent-blue: #3b82f6;
+
+  --font-sans: 'Urbanist', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+
+  --text-heading: 2rem;
+  --text-heading--line-height: 1.2;
+  --text-title: 1.5rem;
+  --text-title--line-height: 1.3;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  @apply bg-canvas font-sans text-base text-ink antialiased;
+}
+
+:focus-visible {
+  @apply outline-2 outline-offset-2 outline-ink;
+}
