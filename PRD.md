@@ -18,9 +18,9 @@ coach, and no admin role.
 | 1b | Two-factor authentication with an authenticator app (TOTP), trusted browsers | done |
 | 1c | Password reset proven by an authenticator code (no email in this stack) | done |
 | 1d | Change password, sign out; a session never expires on its own | done |
-| 2 | **Build habits**: create one, mark it done for a day, current streak, weekly completion rate and days missed per week | planned |
-| 3 | **Break habits**: create one, clean streak (day 1, 2, 3 …), relapse resets it | planned |
-| 4 | **Goals**: add, edit, remove; each linked to one habit of either type | planned |
+| 2 | **Build habits**: create one, mark it done for a day, current streak, weekly completion rate and days missed per week | done |
+| 3 | **Break habits**: create one, clean streak (day 1, 2, 3 …), relapse resets it | done |
+| 4 | **Goals**: add, edit, remove; each linked to one habit of either type | done |
 
 How habits, streaks and goals are modelled is `docs/architecture/habits.md`.
 

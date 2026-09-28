@@ -23,3 +23,4 @@ it was verified; `git log` is the long form of this table.
 | # | Phase | Record | Outcome |
 |---|---|---|---|
 | 1 | Documentation system, the Fastify and React skills, the design system, authentication (email-first sign-in, TOTP two-factor, reset by authenticator), Docker Compose | `01-auth-foundation-plan.md` | 53 backend + 19 frontend tests |
+| 2 | Habits, check-ins, streaks, weekly rate, goals, and their screens | `02-habits-plan.md` | 86 backend + 32 frontend tests |
