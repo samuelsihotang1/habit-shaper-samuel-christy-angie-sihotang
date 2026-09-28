@@ -9,8 +9,8 @@ export const useHabit = (id: string) => useData<Habit>(habitPath(id));
 
 /**
  * Every write answers with the habit as it now stands, streaks included, and
- * that answer replaces both cached copies. Goals count the same logs, so
- * they are fetched again rather than patched here.
+ * that answer replaces both cached copies. Goals and statistics count the
+ * same logs, so they are fetched again rather than patched here.
  */
 export function useHabitActions() {
   const { mutate, revalidate } = useCache();
@@ -19,7 +19,7 @@ export function useHabitActions() {
     const keep = (habit: Habit): Habit => {
       void mutate(habitPath(habit.id), habit, { revalidate: false });
       void mutate(habitsPath(), upsert(habit), { revalidate: false });
-      revalidate('/goals');
+      revalidate('/goals', '/stats');
       return habit;
     };
 
@@ -32,7 +32,7 @@ export function useHabitActions() {
         void mutate(habitsPath(), without<Habit>(id), { revalidate: false });
         // Left cached, Back would show the habit again: SWR keeps the old data beside the 404.
         void mutate(habitPath(id), undefined, { revalidate: false });
-        revalidate('/goals');
+        revalidate('/goals', '/stats');
       },
     };
   }, [mutate, revalidate]);

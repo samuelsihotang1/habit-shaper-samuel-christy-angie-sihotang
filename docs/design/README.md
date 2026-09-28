@@ -10,7 +10,7 @@ whole design system.
 ## Principles
 
 1. **A phone, on every screen.** One column, at most 480px wide, centred. The
-   three top-level screens sit over a black tab bar; every other screen has a
+   four top-level screens sit over a black tab bar; every other screen has a
    back arrow instead.
 2. **Colour separates, lines do not.** White cards on a light grey canvas, a
    black hero card for the one number that matters, brand yellow for the
@@ -27,7 +27,7 @@ Tailwind v4 theme tokens in `frontend/src/index.css`. Use the token names
 
 | Token | Value | Use |
 |---|---|---|
-| `brand` | `#FEBA33` | primary buttons, the active tab, done days |
+| `brand` | `#FEBA33` | primary buttons, the active tab, done days, chart columns |
 | `brand-strong` | `#F2A516` | hover on brand |
 | `brand-soft` | `#FDF5E4` | the cream behind an unchecked check-in, progress tracks |
 | `canvas` | `#F5F6F7` | page background, list rows inside a card |
@@ -61,6 +61,7 @@ with a yellow underline; yellow text appears only on `night`.
 | Manage Habits + delete dialog | `pages/habits/HabitsPage.tsx`, `ConfirmDialog` |
 | — | `pages/habits/HabitDetailPage.tsx`: streak hero, weekly completion, a month calendar to back-date |
 | Explore (card grid) | `pages/goals/`: the goals grid and form |
+| Statistics | `pages/stats/`: Week / Month / Year tabs, the period's rate, completion rate, missed days and relapses per bucket, streaks |
 | Setting, Account | `pages/settings/`: profile, two-factor call-out, rows, sign out |
 
 Premium, social sign-in and reminders in the reference are out of scope (`PRD.md`).
@@ -82,6 +83,14 @@ Premium, social sign-in and reminders in the reference are out of scope (`PRD.md
 | `ProgressBar`, `ProgressRing` | yellow on cream / on the dark hero |
 | `Icon`, `HabitBubble` (`icons.tsx`) | 24px line icons; a habit icon on its accent circle |
 | `TabShell`, `AppShell`, `AuthShell` (`Shells.tsx`) | the column, with or without the tab bar |
+
+## Charts
+
+Columns (`pages/stats/ColumnChart.tsx`): one series each, so no legend;
+columns at most 24px wide with a 4px rounded top and a 2px gap, the newest one
+labelled and in full yellow. Yellow on white is below the 3:1 a mark needs, so
+every column has a keyboard-reachable tooltip and the page repeats the numbers
+in a table. Thirty daily columns label every seventh day.
 
 ## Copy
 

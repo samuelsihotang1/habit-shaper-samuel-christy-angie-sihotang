@@ -72,10 +72,11 @@ export function AppShell() {
 const TABS: { to: string; label: string; icon: IconName }[] = [
   { to: '/', label: 'Today', icon: 'calendar' },
   { to: '/goals', label: 'Goals', icon: 'target' },
+  { to: '/stats', label: 'Statistics', icon: 'sparkles' },
   { to: '/settings', label: 'Settings', icon: 'settings' },
 ];
 
-/** The top-level screens, over the reference's black tab bar. */
+/** The four top-level screens, over the reference's black tab bar. */
 export function TabShell() {
   return (
     <Column className="pt-6 pb-32">

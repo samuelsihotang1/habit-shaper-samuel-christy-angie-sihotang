@@ -10,12 +10,12 @@ paths:
 ### Layering
 
 ```
-pages/        one folder per area (today/ habits/ goals/ settings/); auth pages at the top;
+pages/        one folder per area (today/ habits/ goals/ stats/ settings/); auth pages at the top;
               lazy.ts: every page but Login and Today as a React.lazy chunk, and preload()
 components/   ui.tsx (Button, ActionButton, TextField, Segmented, ConfirmDialog…), icons.tsx, Shells.tsx, RouteGuards.tsx
 services/     one file per API area: writes, and the endpoint paths reads are keyed by; every call goes through services/api.ts
 hooks/        useAuth: the session, sign-in outcomes, the 401 listener;
-              useData: SWR over api.get, useCache; useHabits/useGoals/useDevices: reads and cache-updating writes
+              useData: SWR over api.get, useCache; useHabits/useGoals/useStats/useDevices: reads and cache-updating writes
 utils/        cookies.ts: the only code that touches document.cookie; dates.ts: calendar days; habits.ts: a habit's logged days as a Set
 types/        wire types, snake_case exactly as the API sends them
 ```

@@ -10,6 +10,7 @@ export const loaders = {
   forgotPassword: () => import('@/pages/ForgotPasswordPage'),
   goals: () => import('@/pages/goals/GoalsPage'),
   goalForm: () => import('@/pages/goals/GoalFormPage'),
+  stats: () => import('@/pages/stats/StatsPage'),
   settings: () => import('@/pages/settings/SettingsPage'),
   password: () => import('@/pages/settings/PasswordPage'),
   security: () => import('@/pages/settings/SecurityPage'),
@@ -22,6 +23,7 @@ export const SignUpPage = lazy(() => loaders.signUp().then((module) => ({ defaul
 export const ForgotPasswordPage = lazy(() => loaders.forgotPassword().then((module) => ({ default: module.ForgotPasswordPage })));
 export const GoalsPage = lazy(() => loaders.goals().then((module) => ({ default: module.GoalsPage })));
 export const GoalFormPage = lazy(() => loaders.goalForm().then((module) => ({ default: module.GoalFormPage })));
+export const StatsPage = lazy(() => loaders.stats().then((module) => ({ default: module.StatsPage })));
 export const SettingsPage = lazy(() => loaders.settings().then((module) => ({ default: module.SettingsPage })));
 export const PasswordPage = lazy(() => loaders.password().then((module) => ({ default: module.PasswordPage })));
 export const SecurityPage = lazy(() => loaders.security().then((module) => ({ default: module.SecurityPage })));
@@ -32,6 +34,7 @@ export const HabitDetailPage = lazy(() => loaders.habitDetail().then((module) =>
 /** The loader behind a link target, for the links that preload. */
 const byPath: Record<string, keyof typeof loaders> = {
   '/goals': 'goals',
+  '/stats': 'stats',
   '/settings': 'settings',
   '/settings/password': 'password',
   '/settings/security': 'security',

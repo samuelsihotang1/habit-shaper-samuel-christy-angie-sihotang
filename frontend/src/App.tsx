@@ -12,6 +12,7 @@ import {
   SecurityPage,
   SettingsPage,
   SignUpPage,
+  StatsPage,
 } from '@/pages/lazy';
 import { LoginPage } from '@/pages/LoginPage';
 import { TodayPage } from '@/pages/today/TodayPage';
@@ -29,6 +30,7 @@ export function App() {
         <Route element={<TabShell />}>
           <Route path="/" element={<TodayPage />} />
           <Route path="/goals" element={<GoalsPage />} />
+          <Route path="/stats" element={<StatsPage />} />
           <Route path="/settings" element={<SettingsPage />} />
         </Route>
         <Route element={<AppShell />}>

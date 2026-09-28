@@ -62,6 +62,7 @@ How the suites run is `CLAUDE.md` §1. That every edit ships with its test is
 | `limits.test.ts` | per-IP buckets count malformed requests, login counts per address after validation, a bucket shared by name, and (Docker only, `TEST_REDIS_URL`) counts shared through Redis |
 | `hardening.test.ts` | helmet headers, gzip over 1 KiB, the 64 KiB body limit, the 503 from under-pressure, redacted logs |
 | `config.test.ts` "refuses a port or a log level it cannot use" | `env-schema` validation in `src/config.ts` |
+| `frontend/test/stats.test.tsx` | Week / Month / Year each ask the server for their period; the last period stays, dimmed, until the next answers |
 | `frontend/test/today.test.tsx` | `?tz=` on reads and check-ins; a relapse asks first; a revisited Today draws from the cache; only the saving card spins |
 | `frontend/test/forms.test.tsx` | the edit form starts from the loaded habit (keyed reset); a new habit joins the cached list; a new goal links the first habit |
 | `frontend/test/ui.test.tsx` | `ConfirmDialog` keeps focus on a parent render, and Escape calls the latest `onCancel` |

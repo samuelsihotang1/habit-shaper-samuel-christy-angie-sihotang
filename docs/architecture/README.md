@@ -66,10 +66,10 @@ How Habit Shaper is built. Start here, then read the one file your task needs.
 └── frontend/
     ├── nginx.conf       the production server block
     ├── src/services/    api.ts (the only fetch) + one file per API area
-    ├── src/hooks/       useAuth.tsx; useData.ts (SWR); useHabits, useGoals, useDevices
+    ├── src/hooks/       useAuth.tsx; useData.ts (SWR); useHabits, useGoals, useStats, useDevices
     ├── src/components/  ui.tsx, icons.tsx, Shells.tsx, RouteGuards.tsx
     ├── src/utils/       cookies.ts, dates.ts, habits.ts
-    ├── src/pages/       one folder per area: today/ habits/ goals/ settings/; auth pages at the top; lazy.ts
+    ├── src/pages/       one folder per area: today/ habits/ goals/ stats/ settings/; auth pages at the top; lazy.ts
     └── test/
 ```
 

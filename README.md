@@ -83,6 +83,8 @@ deletes the data and the generated secrets) and start again.
   logging a relapse restarts it.
 - **Goals**: add, edit and remove goals, each linked to one habit, measured by
   its streak against a target in days.
+- **Statistics**: this week at a glance, completion rate and missed days per
+  week, every streak.
 
 ## Local development without Docker (optional)
 
