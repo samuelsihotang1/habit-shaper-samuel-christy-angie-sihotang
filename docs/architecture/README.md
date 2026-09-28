@@ -6,6 +6,7 @@ How Habit Shaper is built. Start here, then read the one file your task needs.
 |---|---|
 | `README.md` | stack, repository layout, known gaps |
 | `api.md` | the envelope, error codes, `api.ts`, sessions, MFA, every route |
+| `habits.md` | habits, check-ins, streaks, weekly rate, goals |
 | `deployment.md` | compose, images, environment variables, migrations on boot, nginx |
 | `../decisions.md` | why things are the way they are |
 | `../security.md` | the threat model and what tests pin it |
@@ -58,9 +59,9 @@ How Habit Shaper is built. Start here, then read the one file your task needs.
 │   ├── migrations/      0001_initial.sql …  ← THE schema
 │   ├── src/app.ts       buildApp(): autoloads plugins/, then each modules/*/routes.ts under /api
 │   ├── src/server.ts    listens
-│   ├── src/lib/         crypto, password, totp, challenge, tokens, errors, http, validation
+│   ├── src/lib/         crypto, password, totp, challenge, tokens, errors, http, validation, dates, streaks
 │   ├── src/plugins/     config, mysql, redis, rate-limit, errors (the envelope), auth (`app.authenticate`), services, helmet, compress, under-pressure
-│   ├── src/modules/     auth/ account/ users/ health/: routes · schemas · service · repository · serialize
+│   ├── src/modules/     auth/ account/ users/ habits/ goals/ health/: routes · schemas · service · repository · serialize
 │   └── test/
 └── frontend/
     ├── nginx.conf       the production server block
@@ -79,8 +80,9 @@ How Habit Shaper is built. Start here, then read the one file your task needs.
 
 ## Known gaps
 
-1. There is no way to rotate `APP_KEY` without locking out every MFA account.
-2. An account without MFA that forgets its password cannot recover it on its
+1. Goals measure only a streak; there is no "done N times" or deadline goal.
+2. There is no way to rotate `APP_KEY` without locking out every MFA account.
+3. An account without MFA that forgets its password cannot recover it on its
    own: reset is proven by an authenticator code, and there is no email.
-3. No account deletion and no name/email change.
-4. Outside Docker, rate-limit counters live in process memory (`RULES.md` §6).
+4. No account deletion and no name/email change.
+5. Outside Docker, rate-limit counters live in process memory (`RULES.md` §6).

@@ -22,6 +22,7 @@ coach, and no admin role.
 | 3 | **Break habits**: create one, clean streak (day 1, 2, 3 …), relapse resets it | planned |
 | 4 | **Goals**: add, edit, remove; each linked to one habit of either type | planned |
 
+How habits, streaks and goals are modelled is `docs/architecture/habits.md`.
 
 ## Non-functional requirements (from the brief)
 

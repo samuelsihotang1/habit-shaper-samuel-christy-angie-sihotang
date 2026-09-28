@@ -20,7 +20,7 @@ export async function buildApp({ config, logger = true }: BuildOptions): Promise
   const app = Fastify({
     logger: logger ? loggerOptions(config.logLevel) : false,
     trustProxy: config.trustProxy,
-    // The largest valid body, a password reset, is under 1 KiB.
+    // The largest valid body, a goal with 500 characters of notes, is under 1 KiB.
     bodyLimit: 64 * 1024,
     // A request that has not finished in 30 s is dropped rather than held open.
     connectionTimeout: 30_000,

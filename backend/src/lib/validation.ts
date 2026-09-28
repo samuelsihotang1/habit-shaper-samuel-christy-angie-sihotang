@@ -1,4 +1,5 @@
 import ajvErrors from 'ajv-errors';
+import { isIsoDay, isTimeZone } from '@/lib/dates.ts';
 import { ValidationFailed } from '@/lib/errors.ts';
 
 /*
@@ -8,6 +9,7 @@ import { ValidationFailed } from '@/lib/errors.ts';
  * - `normalize: 'trim' | 'lowercase'` trims (and lower-cases) a string before
  *   its length, pattern and format are checked, and keeps the result.
  * - `$data` lets `password_confirmation` compare itself with `password`.
+ * - `iso-day` and `time-zone` are the formats `lib/dates.ts` defines.
  */
 const normalize = {
   keyword: 'normalize',
@@ -31,6 +33,7 @@ export const ajvOptions = {
     allErrors: true,
     $data: true,
     keywords: [normalize],
+    formats: { 'iso-day': isIsoDay, 'time-zone': isTimeZone },
   },
   plugins: [errorMessages],
 };

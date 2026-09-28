@@ -49,6 +49,7 @@ One row, not the folder.
 |---|---|
 | before your first edit, whatever it is | `RULES.md` §1 |
 | an endpoint, the envelope, an error code, auth, MFA, sessions | `docs/architecture/api.md` |
+| habits, check-ins, streaks, weekly rate, goals | `docs/architecture/habits.md` |
 | compose, Dockerfiles, env vars, migrations on boot, nginx | `docs/architecture/deployment.md` |
 | stack, repository layout, known gaps | `docs/architecture/README.md` |
 | colour, spacing, components, states | `docs/design/README.md` |

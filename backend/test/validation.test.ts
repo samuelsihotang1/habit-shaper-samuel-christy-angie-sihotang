@@ -33,6 +33,23 @@ describe('route schemas', () => {
     });
   });
 
+  it('keeps the sentences for goals, habits and the time zone', async () => {
+    const { token } = await register(app());
+    const habit = (await post('/api/habits?tz=UTC', { name: 'Read', type: 'build', icon: 'book' }, bearer(token))).json().data;
+
+    const fraction = await post('/api/goals?tz=UTC', { habit_id: habit.id, title: 'Read', target_days: 2.5 }, bearer(token));
+    assert.deepEqual(fraction.json().errors, { target_days: ['Enter a whole number of days.'] });
+
+    const words = await post('/api/goals?tz=UTC', { habit_id: habit.id, title: 'Read', target_days: 'ten' }, bearer(token));
+    assert.deepEqual(words.json().errors, { target_days: ['Enter a number of days.'] });
+
+    const icon = await post('/api/habits?tz=UTC', { name: 'Read', type: 'build', icon: 'rocket' }, bearer(token));
+    assert.deepEqual(icon.json().errors, { icon: ['Choose an icon.'] });
+
+    const zone = await app().inject({ method: 'GET', url: '/api/habits?tz=Mars/Olympus', headers: bearer(token) });
+    assert.deepEqual(zone.json().errors, { tz: ['Unknown time zone.'] });
+  });
+
   it('answers with exactly the keys the response schema lists', async () => {
     await register(app());
     const login = await post('/api/login', { email: 'ana@example.com', password: PASSWORD });

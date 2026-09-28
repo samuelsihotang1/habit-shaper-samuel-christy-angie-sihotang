@@ -4,10 +4,9 @@ import { Writable } from 'node:stream';
 import { setTimeout as sleep } from 'node:timers/promises';
 import { describe, it } from 'node:test';
 import { loggerOptions } from '@/lib/logging.ts';
-import compress from '@/plugins/compress.ts';
 import errors from '@/plugins/errors.ts';
 import underPressure from '@/plugins/under-pressure.ts';
-import { useApp } from './helpers.ts';
+import { bearer, register, useApp } from './helpers.ts';
 
 const app = useApp();
 
@@ -22,17 +21,16 @@ describe('hardening', () => {
   });
 
   it('compresses a large answer for a client that accepts it, and leaves a small one alone', async () => {
-    const bare = Fastify({ logger: false });
-    await bare.register(compress);
-    bare.get('/large', async () => ({ items: Array.from({ length: 200 }, (_, n) => `item ${n}`) }));
-    bare.get('/small', async () => ({ ok: true }));
+    const { token } = await register(app());
+    for (const name of ['Read', 'Run', 'Write', 'Stretch']) {
+      await app().inject({ method: 'POST', url: '/api/habits?tz=UTC', headers: bearer(token), payload: { name, type: 'build', icon: 'book' } });
+    }
 
-    const large = await bare.inject({ method: 'GET', url: '/large', headers: { 'accept-encoding': 'gzip' } });
-    const small = await bare.inject({ method: 'GET', url: '/small', headers: { 'accept-encoding': 'gzip' } });
-    await bare.close();
+    const list = await app().inject({ method: 'GET', url: '/api/habits?tz=UTC', headers: { ...bearer(token), 'accept-encoding': 'gzip' } });
+    const health = await app().inject({ method: 'GET', url: '/api/health', headers: { 'accept-encoding': 'gzip' } });
 
-    assert.equal(large.headers['content-encoding'], 'gzip');
-    assert.equal(small.headers['content-encoding'], undefined);
+    assert.equal(list.headers['content-encoding'], 'gzip');
+    assert.equal(health.headers['content-encoding'], undefined);
   });
 
   it('refuses a body over 64 KiB before reading it', async () => {

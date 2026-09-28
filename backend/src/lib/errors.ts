@@ -52,6 +52,10 @@ export const MfaAlreadyEnabled = refusal('mfa.alreadyEnabled', 422, 'Two-factor 
 export const MfaNotEnabled = refusal('mfa.notEnabled', 422, 'Two-factor authentication is off.');
 export const MfaNotStarted = refusal('mfa.notStarted', 422, 'Start the setup again.', 'code');
 
+export const StartInFuture = refusal('habits.startInFuture', 422, 'The start date cannot be in the future.', 'started_on');
+export const DateOutOfRange = refusal('habits.dateOutOfRange', 422, 'Pick a day between the start of this habit and today.', 'date');
+export const HabitNotFound = refusal('goals.habitNotFound', 422, 'Choose one of your habits.', 'habit_id');
+
 /** The server is over its load limits (`plugins/under-pressure.ts`); `params.retry_after` in seconds. */
 export class Unavailable extends refusal('http.unavailable', 503, 'The server is busy. Try again in a few seconds.') {
   constructor(retryAfter: number) {

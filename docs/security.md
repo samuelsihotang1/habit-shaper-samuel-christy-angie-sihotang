@@ -22,7 +22,7 @@ UX hint; every check that matters runs server-side, keyed to a Bearer token.
 | Password change that leaves an intruder in | Needs the current password and deletes every other token | `password.test.ts` "keeps this session and signs every other one out" |
 | Reset by someone who only knows the email | Reset needs a TOTP code; accounts without MFA cannot reset at all | `password.test.ts` "is refused for an account without MFA" |
 | Reset that leaves an intruder in | Deletes every token and trusted device | `password.test.ts` "sets the new password and signs out every session and trusted device" |
-| Cross-tenant access (IDOR) | Every user-row query carries `userId` from the token in the same `where` | `mfa.test.ts` "can be listed and removed, but never someone else's" |
+| Cross-tenant access (IDOR) | Every user-row query carries `userId` from the token in the same `where` | `mfa.test.ts` "can be listed and removed, but never someone else's"; `habits.test.ts` "never shows, logs, edits or deletes someone else's habit"; `goals.test.ts` "never edits or deletes someone else's goal" and "refuses … a habit that is not yours" |
 | Enumerating rows by id | A stranger's row and a missing row answer the identical 404 | same |
 | SQL injection | Every value is a `?` placeholder that `mysql2` escapes; only constants in the repositories name a table or column | — (grep-verifiable: no `${` inside a value position in `modules/*/repository.ts`) |
 | Stack or SQL disclosure | Unexpected errors become a flat 500 (`plugins/errors.ts`) | `plugins.test.ts` "turns anything unexpected into a flat 500"; `auth.test.ts` "answers malformed JSON with a 400, not a 500" |

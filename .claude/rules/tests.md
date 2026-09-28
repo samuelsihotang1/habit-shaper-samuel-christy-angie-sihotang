@@ -51,7 +51,11 @@ How the suites run is `CLAUDE.md` §1. That every edit ships with its test is
 | `password.test.ts` "kills a challenge issued before the reset" | the password fingerprint in `lib/challenge.ts` |
 | `frontend/test/api.test.ts` | the `api.ts` contract: envelope, `ApiError`, the 401 event, GET de-dupe |
 | `frontend/test/routes.test.tsx` | the guards, no `/me` on load, signing out on a server 401, and both sign-outs emptying the SWR cache |
+| `habits.test.ts` "never shows, logs, edits or deletes someone else's habit" | `RULES.md` §1.2 for habits and their logs |
+| `goals.test.ts` "never edits or deletes someone else's goal" | `RULES.md` §1.2 for goals |
+| `streaks.test.ts` | streak, clean streak and weekly rules (`docs/architecture/habits.md`) |
 | `auth.test.ts` "stores the password as an argon2id hash" | argon2id with the parameters in `lib/password.ts` |
+| `habits.test.ts` "refuses a request without a session before it reads the body" | `app.authenticate` runs `onRequest`, before validation |
 | `validation.test.ts` | every route-schema sentence, `normalize` before length checks, the `$data` confirmation, response schemas dropping unlisted keys |
 | `plugins.test.ts` | the errors plugin alone: refusal codes as written, the 422 shape, `Retry-After`, a flat 500 |
 | `limits.test.ts` | per-IP buckets count malformed requests, login counts per address after validation, a bucket shared by name, and (Docker only, `TEST_REDIS_URL`) counts shared through Redis |

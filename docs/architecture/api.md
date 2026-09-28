@@ -43,6 +43,9 @@ Status codes in use: 200, 201, 400, 401, 404, 413, 422, 429, 500, 503.
 | `auth.unauthenticated` | 401 | no, malformed, forged or revoked Bearer token |
 | `mfa.badCode` | 422 | a TOTP code that is wrong, outside ±1 step, or already used |
 | `mfa.alreadyEnabled` / `mfa.notEnabled` / `mfa.notStarted` | 422 | an MFA action out of order |
+| `habits.startInFuture` | 422 | a habit's `started_on` after today (in `tz`) |
+| `habits.dateOutOfRange` | 422 | a check-in before the habit started or after today |
+| `goals.habitNotFound` | 422 | a goal linked to a habit that is not yours, archived or missing |
 | `http.throttled` | 429 | a rate limit; `params.retry_after` in seconds, also the `Retry-After` header |
 | `http.notFound` | 404 | no such route, or a row that is not yours |
 | `http.badRequest` | 4xx | Fastify refused the request before a handler ran |
@@ -176,3 +179,17 @@ plugins/errors.ts  refusal / ValidationFailed / Fastify 4xx / anything else → 
 | `POST /account/mfa/setup` · `/confirm` · `/disable` | 10/min per user. Disable is POST because the proof travels in the body |
 | `GET /account/devices` | trusted devices, most recently used first |
 | `DELETE /account/devices/all` · `/account/devices/:id` | scoped by user in the same query; a stranger's id is 404 |
+
+**Habits and goals (`authenticate`)**. Every one takes `?tz=` (`habits.md`); writes share 120/min per user.
+
+| Path | Notes |
+|---|---|
+| `GET /habits` | active habits, oldest first, each with `logs`, `stats`, `weeks` |
+| `POST /habits` | `{ name, type, icon, started_on? }`, 201; `started_on` defaults to today |
+| `GET /habits/:id` · `PUT /habits/:id` | `PUT` takes `{ name, icon, started_on }`; the type is fixed |
+| `DELETE /habits/:id` | archives the habit and its goals; the log stays |
+| `PUT` · `DELETE /habits/:id/logs/:date` | mark or clear one day (`YYYY-MM-DD`), idempotent; answers the updated habit |
+| `GET /goals` · `POST /goals` | `{ habit_id, title, target_days?, notes? }`; each goal embeds its habit and `progress` |
+| `PUT /goals/:id` · `DELETE /goals/:id` | same body as `POST`; delete removes the row |
+
+A stranger's habit or goal id is 404 on every route, from the same `where { id, userId }`.
