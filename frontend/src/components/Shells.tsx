@@ -1,6 +1,8 @@
 import { Suspense, type ReactNode } from 'react';
-import { Link, Outlet } from 'react-router';
+import { Link, NavLink, Outlet } from 'react-router';
+import { Icon, type IconName } from '@/components/icons';
 import { cx } from '@/components/ui';
+import { preload } from '@/pages/lazy';
 
 /** The H mark on its yellow tile, as in the reference's app icon. Same drawing as public/favicon.svg. */
 export function LogoMark({ className = 'size-10' }: { className?: string }) {
@@ -52,17 +54,65 @@ export function AuthShell({ title, subtitle, children }: { title: string; subtit
 
 /**
  * What shows while a page's chunk loads (pages/lazy.ts). The Suspense sits
- * inside each shell, so the shell stays on screen rather than blanking with the page.
+ * inside each shell, so the tab bar stays on screen rather than blanking with the page.
  */
 const PAGE_LOADING = <div className="h-72 animate-pulse rounded-3xl bg-surface" aria-busy="true" aria-label="Loading" />;
 
-/** Signed-in screens: settings, and the forms behind it, which have a back arrow. */
+/** Signed-in screens without the tab bar: forms and details, which have a back arrow instead. */
 export function AppShell() {
   return (
     <Column className="pt-6 pb-10">
       <Suspense fallback={PAGE_LOADING}>
         <Outlet />
       </Suspense>
+    </Column>
+  );
+}
+
+const TABS: { to: string; label: string; icon: IconName }[] = [
+  { to: '/', label: 'Today', icon: 'calendar' },
+  { to: '/goals', label: 'Goals', icon: 'target' },
+  { to: '/settings', label: 'Settings', icon: 'settings' },
+];
+
+/** The top-level screens, over the reference's black tab bar. */
+export function TabShell() {
+  return (
+    <Column className="pt-6 pb-32">
+      <Suspense fallback={PAGE_LOADING}>
+        <Outlet />
+      </Suspense>
+      <nav
+        aria-label="Main"
+        className="fixed inset-x-0 bottom-0 z-40 mx-auto w-full max-w-[480px] px-5 pb-[max(1.25rem,env(safe-area-inset-bottom))]"
+      >
+        <ul className="flex items-center justify-between rounded-full bg-night p-2 shadow-lg shadow-night/20">
+          {TABS.map((tab) => (
+            <li key={tab.to}>
+              <NavLink
+                to={tab.to}
+                end={tab.to === '/'}
+                aria-label={tab.label}
+                onMouseEnter={() => preload(tab.to)}
+                onFocus={() => preload(tab.to)}
+                className={({ isActive }) =>
+                  cx(
+                    'flex h-12 items-center gap-2 rounded-full transition',
+                    isActive ? 'bg-brand px-5 text-ink' : 'w-12 justify-center text-white/80 hover:text-white',
+                  )
+                }
+              >
+                {({ isActive }) => (
+                  <>
+                    <Icon name={tab.icon} className="size-5" />
+                    {isActive ? <span className="text-sm font-bold">{tab.label}</span> : null}
+                  </>
+                )}
+              </NavLink>
+            </li>
+          ))}
+        </ul>
+      </nav>
     </Column>
   );
 }

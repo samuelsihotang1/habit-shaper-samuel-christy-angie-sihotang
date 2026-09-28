@@ -9,7 +9,9 @@ whole design system.
 
 ## Principles
 
-1. **A phone, on every screen.** One column, at most 480px wide, centred.
+1. **A phone, on every screen.** One column, at most 480px wide, centred. The
+   three top-level screens sit over a black tab bar; every other screen has a
+   back arrow instead.
 2. **Colour separates, lines do not.** White cards on a light grey canvas, a
    black hero card for the one number that matters, brand yellow for the
    action and the active state.
@@ -25,12 +27,12 @@ Tailwind v4 theme tokens in `frontend/src/index.css`. Use the token names
 
 | Token | Value | Use |
 |---|---|---|
-| `brand` | `#FEBA33` | primary buttons |
+| `brand` | `#FEBA33` | primary buttons, the active tab, done days |
 | `brand-strong` | `#F2A516` | hover on brand |
 | `brand-soft` | `#FDF5E4` | the cream behind an unchecked check-in, progress tracks |
 | `canvas` | `#F5F6F7` | page background, list rows inside a card |
 | `surface` | `#FFFFFF` | cards, inputs |
-| `night` / `night-soft` | `#0D0D0D` / `#262626` | hero cards |
+| `night` / `night-soft` | `#0D0D0D` / `#262626` | hero cards, the tab bar, the chosen day |
 | `ink` / `ink-muted` | `#0D0D0D` / `#6B6B70` | text |
 | `line` | `#EAEBED` | the rare divider, chart grid |
 | `danger` / `danger-soft` | `#F04438` / `#FEE4E2` | relapses, delete |
@@ -54,6 +56,11 @@ with a yellow underline; yellow text appears only on `night`.
 | Reference screen | Here |
 |---|---|
 | Welcome | `AuthShell`: logo, black hero, white sheet with the form |
+| Today (date row, Evening/All Day, habit cards with +1) | `pages/today/`: hero with the day's progress ring, `WeekStrip`, Build/Break tabs, `HabitCard` with Mark done / Log relapse |
+| New Habit, Essential | `pages/habits/HabitFormPage.tsx`: black card with the name input, type tabs, icon grid, start date |
+| Manage Habits + delete dialog | `pages/habits/HabitsPage.tsx`, `ConfirmDialog` |
+| — | `pages/habits/HabitDetailPage.tsx`: streak hero, weekly completion, a month calendar to back-date |
+| Explore (card grid) | `pages/goals/`: the goals grid and form |
 | Setting, Account | `pages/settings/`: profile, two-factor call-out, rows, sign out |
 
 Premium, social sign-in and reminders in the reference are out of scope (`PRD.md`).
@@ -73,8 +80,8 @@ Premium, social sign-in and reminders in the reference are out of scope (`PRD.md
 | `PageHeader` | back arrow, centred title, one action |
 | `ConfirmDialog` | the reference's delete dialog; Escape and the backdrop cancel |
 | `ProgressBar`, `ProgressRing` | yellow on cream / on the dark hero |
-| `Icon` (`icons.tsx`) | 24px line icons |
-| `AppShell`, `AuthShell` (`Shells.tsx`) | the column |
+| `Icon`, `HabitBubble` (`icons.tsx`) | 24px line icons; a habit icon on its accent circle |
+| `TabShell`, `AppShell`, `AuthShell` (`Shells.tsx`) | the column, with or without the tab bar |
 
 ## Copy
 

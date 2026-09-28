@@ -79,7 +79,8 @@ client needs it → the type in `frontend/src/types/`.
 
 **A signed-in page**: `pages/<area>/<Name>Page.tsx`, reading through a hook
 in `hooks/` → a `React.lazy` export in `pages/lazy.ts` (and a `byPath` entry if
-a link preloads it) → a `<Route>` inside `<ProtectedRoute>` and `<AppShell>` in `App.tsx`.
+a link preloads it) → a `<Route>` inside `<ProtectedRoute>` and `<TabShell>`
+or `<AppShell>` in `App.tsx` → for a tab, an entry in `TABS` in `Shells.tsx`.
 
 **A new error code**: a `refusal(...)` class in `backend/src/lib/errors.ts`, thrown
 where it applies → list it
@@ -117,6 +118,8 @@ Each of these cost time once already.
 | Trap | |
 |---|---|
 | `mutate` exported by `swr` sounds like it writes the app's cache | it writes SWR's default cache only; under `<SWRConfig provider>`, as every test renders, it misses. `useCache()` in `hooks/useData.ts` takes the bound `mutate` from `useSWRConfig()` |
+| A cached key sounds like it revalidates on mount, during render | SWR defers it a frame (`rAF`, a timer in jsdom), so a test counting requests right after a render sees none yet (observed). `today.test.tsx` waits before counting |
+| SWR's `error` sounds like it replaces `data` | a failed revalidation keeps the old `data` beside the error, so a deleted habit's cached copy would reappear on Back. Deleting drops that key (`useHabitActions`) |
 
 ### nginx and the browser
 

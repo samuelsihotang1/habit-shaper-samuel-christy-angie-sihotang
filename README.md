@@ -76,6 +76,13 @@ deletes the data and the generated secrets) and start again.
   Authenticator, 1Password, Authy…), with "don't ask again on this browser".
 - **Password reset with your authenticator code**: available when two-factor
   authentication is on. There is no email in this app.
+- **Build habits**: mark a day done (today, or back-dated on the habit's
+  calendar), see the current and best streak and each week's completion rate
+  and missed days.
+- **Break habits**: a clean streak that counts up by itself (day 1, 2, 3 …);
+  logging a relapse restarts it.
+- **Goals**: add, edit and remove goals, each linked to one habit, measured by
+  its streak against a target in days.
 
 ## Local development without Docker (optional)
 

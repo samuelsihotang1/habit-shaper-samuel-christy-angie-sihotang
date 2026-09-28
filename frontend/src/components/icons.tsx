@@ -54,6 +54,46 @@ const paths = {
   list: <path d="M8.5 6h12M8.5 12h12M8.5 18h12M4 6h.01M4 12h.01M4 18h.01" />,
   logout: <path d="M9.5 21H5.5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" />,
   trend: <path d="M3 17.5 9.5 11l4 4L21 7.5M15 7.5h6v6" />,
+  // Habit icons: keep in step with HABIT_ICONS below and the backend's list.
+  water: <path d="M12 21.5a6.5 6.5 0 0 0 6.5-6.5c0-4-4-7.5-6.5-12.5C9.5 7.5 5.5 11 5.5 15a6.5 6.5 0 0 0 6.5 6.5Z" />,
+  book: <path d="M3 4.5h5.5A3.5 3.5 0 0 1 12 8v13a2.5 2.5 0 0 0-2.5-2.5H3ZM21 4.5h-5.5A3.5 3.5 0 0 0 12 8v13a2.5 2.5 0 0 1 2.5-2.5H21Z" />,
+  run: (
+    <>
+      <circle cx="15.5" cy="3.5" r="2" />
+      <path d="M14 7l-2.5 6.5M11.5 13.5l4 2.5-1 5M11.5 13.5l-2 4.5-4.5.5M14 7l-4 1.5-2 3M14 7l2.5 3.5 3 .5" />
+    </>
+  ),
+  meditate: (
+    <>
+      <circle cx="12" cy="5" r="2.2" />
+      <path d="M12 9v5M5 12.5c2 0 3.5-1 4.5-3h5c1 2 2.5 3 4.5 3M4 19.5c2.5-1.5 5-2 8-2s5.5.5 8 2M8.5 16.5 12 14l3.5 2.5" />
+    </>
+  ),
+  journal: <path d="M12 20h8.5M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" />,
+  sleep: <path d="M20.5 14A8.5 8.5 0 1 1 10 3.5a6.5 6.5 0 0 0 10.5 10.5Z" />,
+  heart: <path d="M12 20.5s-8.5-4.8-8.5-11A4.8 4.8 0 0 1 12 6.6a4.8 4.8 0 0 1 8.5 2.9c0 6.2-8.5 11-8.5 11Z" />,
+  sun: (
+    <>
+      <circle cx="12" cy="12" r="4" />
+      <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
+    </>
+  ),
+  food: (
+    <>
+      <path d="M3.5 11.5h17a8.5 8.5 0 0 1-17 0Z" />
+      <path d="M12 11.5c0-3 1.5-5.5 4.5-6.5M8 11.5c0-2 .5-4 2-5.5" />
+    </>
+  ),
+  phone: (
+    <>
+      <rect x="6" y="2.5" width="12" height="19" rx="2.5" />
+      <path d="M11 18.5h2" />
+    </>
+  ),
+  smoke: <path d="M2.5 15.5h14v4h-14ZM19 15.5v4M21.5 15.5v4M19 12.5c0-2-2-2-2-4s2-2 2-4M21.5 12.5c0-2-2-2-2-4s2-2 2-4" />,
+  coffee: <path d="M4 8.5h13v6a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5ZM17 10h1.5a2.5 2.5 0 0 1 0 5H17M7.5 2.5v3M11 2.5v3M14.5 2.5v3" />,
+  star: <path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2L12 17.3l-5.6 2.9 1.1-6.2L3 9.6l6.2-.9Z" />,
+  leaf: <path d="M5 20.5c0-8 4.5-14 15.5-15.5C19 16 13 19.5 5 20.5Zm0 0 8-8" />,
 } as const;
 
 export type IconName = keyof typeof paths;
@@ -73,5 +113,65 @@ export function Icon({ name, className = 'size-6', ...props }: { name: IconName 
     >
       {paths[name]}
     </svg>
+  );
+}
+
+/** Must equal HABIT_ICONS in backend/src/modules/habits/schemas.ts; the API refuses any other. */
+export const HABIT_ICONS = [
+  'water', 'book', 'run', 'meditate', 'journal', 'sleep', 'heart', 'sun',
+  'food', 'phone', 'smoke', 'coffee', 'star', 'leaf',
+] as const satisfies readonly IconName[];
+
+export type HabitIcon = (typeof HABIT_ICONS)[number];
+
+/** Each habit icon sits on its own colour, as the list rows in the reference do. */
+export const ICON_TONE: Record<HabitIcon, string> = {
+  water: 'bg-accent-blue',
+  book: 'bg-accent-orange',
+  run: 'bg-accent-teal',
+  meditate: 'bg-brand',
+  journal: 'bg-accent-purple',
+  sleep: 'bg-accent-blue',
+  heart: 'bg-accent-pink',
+  sun: 'bg-brand',
+  food: 'bg-accent-red',
+  phone: 'bg-accent-purple',
+  smoke: 'bg-accent-red',
+  coffee: 'bg-accent-orange',
+  star: 'bg-accent-green',
+  leaf: 'bg-accent-green',
+};
+
+export const ICON_LABEL: Record<HabitIcon, string> = {
+  water: 'Water',
+  book: 'Reading',
+  run: 'Running',
+  meditate: 'Meditation',
+  journal: 'Journal',
+  sleep: 'Sleep',
+  heart: 'Health',
+  sun: 'Morning',
+  food: 'Food',
+  phone: 'Screen time',
+  smoke: 'Smoking',
+  coffee: 'Caffeine',
+  star: 'Other',
+  leaf: 'Nature',
+};
+
+const HABIT_ICON_SET: ReadonlySet<string> = new Set(HABIT_ICONS);
+
+export const isHabitIcon = (value: string): value is HabitIcon => HABIT_ICON_SET.has(value);
+
+const BUBBLE_BOX = { sm: 'size-8', md: 'size-11', lg: 'size-14', fill: 'w-full' } as const;
+const BUBBLE_GLYPH = { sm: 'size-4', md: 'size-5', lg: 'size-7', fill: 'size-1/2 max-w-6' } as const;
+
+/** A habit's icon on its coloured circle. `fill` is as wide as its parent, e.g. a grid cell. */
+export function HabitBubble({ icon, size = 'md' }: { icon: string; size?: 'sm' | 'md' | 'lg' | 'fill' }) {
+  const name: HabitIcon = isHabitIcon(icon) ? icon : 'star';
+  return (
+    <span className={`inline-flex aspect-square shrink-0 items-center justify-center rounded-full text-white ${BUBBLE_BOX[size]} ${ICON_TONE[name]}`}>
+      <Icon name={name} className={BUBBLE_GLYPH[size]} />
+    </span>
   );
 }

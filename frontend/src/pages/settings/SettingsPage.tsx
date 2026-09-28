@@ -5,6 +5,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { preload } from '@/pages/lazy';
 
 const ROWS: { to: string; label: string; hint: string; icon: IconName; tone: string }[] = [
+  { to: '/habits', label: 'Manage habits', hint: 'Edit or delete a habit', icon: 'list', tone: 'bg-accent-orange' },
   { to: '/settings/password', label: 'Password', hint: 'Change your password', icon: 'lock', tone: 'bg-accent-purple' },
   { to: '/settings/security', label: 'Two-factor and browsers', hint: 'Authenticator app, trusted browsers', icon: 'shield', tone: 'bg-accent-green' },
 ];

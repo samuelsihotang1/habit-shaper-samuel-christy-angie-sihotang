@@ -10,13 +10,13 @@ paths:
 ### Layering
 
 ```
-pages/        one folder per area (settings/); auth pages at the top;
-              lazy.ts: every page but Login as a React.lazy chunk, and preload()
+pages/        one folder per area (today/ habits/ goals/ settings/); auth pages at the top;
+              lazy.ts: every page but Login and Today as a React.lazy chunk, and preload()
 components/   ui.tsx (Button, ActionButton, TextField, Segmented, ConfirmDialog…), icons.tsx, Shells.tsx, RouteGuards.tsx
 services/     one file per API area: writes, and the endpoint paths reads are keyed by; every call goes through services/api.ts
 hooks/        useAuth: the session, sign-in outcomes, the 401 listener;
-              useData: SWR over api.get, useCache; useDevices: reads and cache-updating writes
-utils/        cookies.ts: the only code that touches document.cookie
+              useData: SWR over api.get, useCache; useHabits/useGoals/useDevices: reads and cache-updating writes
+utils/        cookies.ts: the only code that touches document.cookie; dates.ts: calendar days; habits.ts: a habit's logged days as a Set
 types/        wire types, snake_case exactly as the API sends them
 ```
 
@@ -30,12 +30,12 @@ types/        wire types, snake_case exactly as the API sends them
   `useCache()`, never the one exported by `swr` (`RULES.md` §6).
 - **Waiting is a transition.** A request started by a click runs in
   `startTransition`, and its `isPending` drives the spinner; a component with
-  several independent actions gives each its own (`ActionButton`).
+  several independent actions gives each its own (`HabitCard`, `ActionButton`).
   No hand-kept `busy` flag.
 - **A form editing a fetched record is keyed by it**: a loader renders
   `<Form key={record.id} initial={…} />`, so the inputs start from the
   record instead of an effect copying it in.
-- **A page is lazy unless it is Login**: export it from
+- **A page is lazy unless it is Login or Today**: export it from
   `pages/lazy.ts`, and add its path to `byPath` if a link should preload it.
   The Suspense boundary is in the shells, around `<Outlet />`.
 - **Errors are `ApiError`.** Show `error.field('<name>')` under that input;
@@ -48,6 +48,10 @@ types/        wire types, snake_case exactly as the API sends them
 - **Colours are theme tokens** (`bg-brand`, `text-ink-muted`, `border-line`),
   never raw Tailwind palette names. See `docs/design/README.md`. Yellow is
   never text on white (1.7:1): a link there is `text-ink` with a yellow underline.
+- **A habit or goal request goes through `services/habits.ts` or
+  `services/goals.ts`**, which add `?tz=`; the server's "today" depends on it.
+- **A day is a `YYYY-MM-DD` string** from `utils/dates.ts`, never a `Date`:
+  `formatDay` renders it in UTC so the browser's zone cannot shift it.
 - Imports use the `@/` alias for `src/`.
 - UI copy is English, written in the second person, sentence case, no
   exclamation marks.

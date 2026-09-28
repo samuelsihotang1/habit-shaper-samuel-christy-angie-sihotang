@@ -3,7 +3,7 @@ import { createRoot, type Root } from 'react-dom/client';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { App } from '@/App';
-import { AppShell } from '@/components/Shells';
+import { TabShell } from '@/components/Shells';
 import { AuthProvider } from '@/hooks/useAuth';
 import { loaders } from '@/pages/lazy';
 import { MfaSection } from '@/pages/settings/MfaSection';
@@ -54,34 +54,34 @@ async function render(path: string, routes = <Route path="*" element={<App />} /
 const Forever = lazy(() => new Promise<never>(() => {}));
 
 describe('code splitting', () => {
-  it('keeps the shell on screen while a page loads', async () => {
+  it('keeps the tab bar on screen while a page loads', async () => {
     await render(
       '/',
-      <Route element={<AppShell />}>
+      <Route element={<TabShell />}>
         <Route path="/" element={<Forever />} />
       </Route>,
     );
 
-    expect(container.firstElementChild?.childElementCount).toBe(1);
+    expect(container.querySelector('nav[aria-label="Main"]')).not.toBeNull();
     expect(container.querySelector('[aria-busy="true"][aria-label="Loading"]')).not.toBeNull();
   });
 
   it('loads a page from its own chunk', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue(envelope([])));
 
-    await render('/settings');
-    await vi.waitFor(() => expect(container.querySelector('h1')?.textContent).toBe('Settings'));
+    await render('/goals');
+    await vi.waitFor(() => expect(container.querySelector('h1')?.textContent).toBe('Goals'));
   });
 
-  it('starts loading a page as soon as the pointer or focus reaches its link', async () => {
+  it('starts loading a tab as soon as the pointer or focus reaches it', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue(envelope([])));
-    const password = vi.spyOn(loaders, 'password');
-    await render('/settings');
+    const goals = vi.spyOn(loaders, 'goals');
+    await render('/');
 
-    const link = await vi.waitFor(() => container.querySelector<HTMLAnchorElement>('a[href="/settings/password"]')!);
-    await act(async () => link.dispatchEvent(new FocusEvent('focusin', { bubbles: true })));
+    const tab = container.querySelector<HTMLAnchorElement>('a[aria-label="Goals"]')!;
+    await act(async () => tab.dispatchEvent(new FocusEvent('focusin', { bubbles: true })));
 
-    expect(password).toHaveBeenCalled();
+    expect(goals).toHaveBeenCalled();
   });
 
   it('loads the QR library only once MFA setup starts', async () => {

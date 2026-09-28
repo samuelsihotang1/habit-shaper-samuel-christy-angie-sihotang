@@ -6,8 +6,8 @@ import type { Cache } from 'swr';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ProtectedRoute, PublicOnlyRoute } from '@/components/RouteGuards';
 import { useAuth, AuthProvider } from '@/hooks/useAuth';
-import { useDevices } from '@/hooks/useDevices';
-import { DEVICES_PATH } from '@/services/account';
+import { useHabits } from '@/hooks/useHabits';
+import { habitsPath } from '@/services/habits';
 import { removeAuthUser, setAuthUser } from '@/utils/cookies';
 import { envelope, FreshCache } from './support';
 
@@ -33,10 +33,10 @@ afterEach(() => {
 /** A protected page that, like every real one, loads something from the API. */
 function LoadingPage() {
   const { logout } = useAuth();
-  const { data } = useDevices();
+  const { data } = useHabits();
   return (
     <button type="button" onClick={() => void logout()}>
-      {data ? `${data.length} devices` : 'devices page'}
+      {data ? `${data.length} habits` : 'habits page'}
     </button>
   );
 }
@@ -53,7 +53,7 @@ async function renderAt(path: string, cache?: Cache) {
               </Route>
               <Route element={<ProtectedRoute />}>
                 <Route path="/" element={<p>home page</p>} />
-                <Route path="/settings/security" element={<LoadingPage />} />
+                <Route path="/habits" element={<LoadingPage />} />
               </Route>
             </Routes>
           </AuthProvider>
@@ -93,27 +93,27 @@ describe('route guards', () => {
   it("signs out when a page's request answers 401, and forgets what it cached", async () => {
     setAuthUser({ user, token: 'id|dead' });
     const cache: Cache = new Map();
-    cache.set('/me', { data: user });
+    cache.set('/goals?tz=UTC', { data: [{ id: 'g1' }] });
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue(new Response(JSON.stringify({ success: false, message: 'Unauthenticated.' }), { status: 401 })));
 
-    await renderAt('/settings/security', cache);
+    await renderAt('/habits', cache);
 
     expect(container.textContent).toBe('login page');
     expect(Cookies.get('auth_key')).toBeUndefined();
-    expect(cache.get('/me')?.data).toBeUndefined();
+    expect(cache.get('/goals?tz=UTC')?.data).toBeUndefined();
   });
 
   it('signing out forgets every cached answer', async () => {
     setAuthUser({ user, token: 'id|secret' });
     const cache: Cache = new Map();
-    vi.stubGlobal('fetch', vi.fn(async (url: string) => envelope(url.startsWith('/api/account/devices') ? [{ id: 'd1' }] : null)));
-    await renderAt('/settings/security', cache);
-    expect(container.textContent).toBe('1 devices');
-    expect(cache.get(DEVICES_PATH)?.data).toHaveLength(1);
+    vi.stubGlobal('fetch', vi.fn(async (url: string) => envelope(url.startsWith('/api/habits') ? [{ id: 'h1' }] : null)));
+    await renderAt('/habits', cache);
+    expect(container.textContent).toBe('1 habits');
+    expect(cache.get(habitsPath())?.data).toHaveLength(1);
 
     await act(async () => container.querySelector('button')!.click());
 
     expect(container.textContent).toBe('login page');
-    expect(cache.get(DEVICES_PATH)?.data).toBeUndefined();
+    expect(cache.get(habitsPath())?.data).toBeUndefined();
   });
 });

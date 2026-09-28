@@ -31,7 +31,7 @@ How Habit Shaper is built. Start here, then read the one file your task needs.
 | Frontend framework | React ^19 | `frontend/` |
 | Bundler | Vite ^8 | |
 | Styling | Tailwind CSS v4, theme tokens in `src/index.css` | |
-| Routing | react-router ^8, declarative `<Routes>`; every page but Login is a `React.lazy` chunk | `frontend/src/App.tsx`, `frontend/src/pages/lazy.ts` |
+| Routing | react-router ^8, declarative `<Routes>`; every page but Login and Today is a `React.lazy` chunk | `frontend/src/App.tsx`, `frontend/src/pages/lazy.ts` |
 | Data fetching | SWR, keyed by endpoint, over `api.ts` | `frontend/src/hooks/useData.ts` and one hook file per area |
 | Cookies | js-cookie | `frontend/src/utils/cookies.ts` |
 | QR codes | qrcode, drawn in the browser, imported only when MFA setup starts | `pages/settings/MfaSection.tsx` |
@@ -66,10 +66,10 @@ How Habit Shaper is built. Start here, then read the one file your task needs.
 └── frontend/
     ├── nginx.conf       the production server block
     ├── src/services/    api.ts (the only fetch) + one file per API area
-    ├── src/hooks/       useAuth.tsx; useData.ts (SWR); useDevices
+    ├── src/hooks/       useAuth.tsx; useData.ts (SWR); useHabits, useGoals, useDevices
     ├── src/components/  ui.tsx, icons.tsx, Shells.tsx, RouteGuards.tsx
-    ├── src/utils/       cookies.ts
-    ├── src/pages/       one folder per area: settings/; auth pages at the top; lazy.ts
+    ├── src/utils/       cookies.ts, dates.ts, habits.ts
+    ├── src/pages/       one folder per area: today/ habits/ goals/ settings/; auth pages at the top; lazy.ts
     └── test/
 ```
 
