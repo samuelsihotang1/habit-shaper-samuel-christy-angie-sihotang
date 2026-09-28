@@ -9,6 +9,7 @@ rules the agent worked under are the rest of the repository's agent layer:
 |---|---|
 | `sessions.md` | The working log: each request that led to a commit, what the agent did, and how it was verified |
 | `01-auth-foundation-plan.md` | The plan approved before phase 1, as approved |
+| `02-habits-plan.md` | The plan approved before phase 2, as approved |
 
 A plan is kept as it was approved, so some of it may later change; what
 applies now is in `docs/decisions.md` and `docs/architecture/`. **When a plan
