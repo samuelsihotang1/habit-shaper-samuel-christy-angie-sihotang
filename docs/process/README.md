@@ -10,6 +10,7 @@ rules the agent worked under are the rest of the repository's agent layer:
 | `sessions.md` | The working log: each request that led to a commit, what the agent did, and how it was verified |
 | `01-auth-foundation-plan.md` | The plan approved before phase 1, as approved |
 | `02-habits-plan.md` | The plan approved before phase 2, as approved |
+| `03-statistics-demo-review.md` | Phase 3, which grew out of review: requests, decisions, verification, and the audit against the brief |
 
 A plan is kept as it was approved, so some of it may later change; what
 applies now is in `docs/decisions.md` and `docs/architecture/`. **When a plan
@@ -24,3 +25,4 @@ it was verified; `git log` is the long form of this table.
 |---|---|---|---|
 | 1 | Documentation system, the Fastify and React skills, the design system, authentication (email-first sign-in, TOTP two-factor, reset by authenticator), Docker Compose | `01-auth-foundation-plan.md` | 53 backend + 19 frontend tests |
 | 2 | Habits, check-ins, streaks, weekly rate, goals, and their screens | `02-habits-plan.md` | 86 backend + 32 frontend tests |
+| 3 | Week / Month / Year statistics, demo data, the audit against the brief | `03-statistics-demo-review.md` | 91 backend + 34 frontend tests |

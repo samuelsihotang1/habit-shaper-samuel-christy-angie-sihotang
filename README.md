@@ -34,6 +34,7 @@ starts serving, so there is nothing to run by hand.
 | Stop and **delete all data** | `docker compose down -v` |
 | Run the backend tests | `docker compose run --rm --build backend-test` |
 | Use another port | `APP_PORT=8090 docker compose up --build` |
+| Load the demo account (a year of data; sign-in in the file's header) | `docker compose exec -T db sh -c 'mysql -uroot -p"$(cat /secrets/mysql_root_password)" "$(cat /secrets/mysql_database)"' < db/demo.sql` |
 
 ## Configuration
 

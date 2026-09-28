@@ -30,6 +30,7 @@ Run from the repository root unless the row says otherwise.
 | `npm test` (in `frontend/`) | frontend suite, vitest + jsdom, no server needed |
 | `npm run build` (in `frontend/`) | `tsc` + `vite build` |
 | `npm run migrate` (in `backend/`) | applies every new `backend/migrations/*.sql` to `DATABASE_URL`; a migration is a new numbered file |
+| `mysql -uroot -p habit_shaper < db/demo.sql` | the demo account: a year of habits, relapses and goals, dated from today; rerunning replaces it. Sign-in is in the file's header |
 
 **Allowed without asking**: typecheck, both test suites, `build`, `docker
 compose up/build/logs/ps`, `down` without `-v`. **Ask first**: `down -v` or

@@ -74,3 +74,16 @@ The agent asked where the local database lives (the local MariaDB on
 | `feat(backend): habits, check-ins, streaks and goals` | the routes, the streak rules, their tests |
 | `feat(frontend): the Today, habit and goal screens` | every screen of the phase, their tests |
 | `docs: record the habits phase` | this section, `PRD.md` |
+
+---
+
+## Phase 3: statistics, demo data, and review
+
+| # | Request | What the agent did |
+|---|---|---|
+| 1 | Give Statistics Week, Month and Year buttons that work | `GET /api/stats?period=` on the server, and the screen with three tabs |
+| 2 | Add a SQL file of demo data for one account, covering every feature as fully as possible | Wrote `db/demo.sql`, loaded it, and checked every period as the demo account |
+| 3 | Check the project against the brief | Audited every requirement (`03-statistics-demo-review.md`) |
+
+Verified: 91 backend and 34 frontend tests; the whole brief end to end on a
+fresh checkout (`03-statistics-demo-review.md`).
