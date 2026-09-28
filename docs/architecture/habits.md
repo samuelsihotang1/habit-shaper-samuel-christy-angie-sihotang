@@ -44,6 +44,23 @@ For each ISO week (Monday–Sunday) since `started_on`: `days` that counted,
 once it is done and is never a missed day, so an unchecked morning does not
 read as a failure. The habit screen shows these weeks.
 
+## Statistics
+
+`GET /api/stats?period=` adds up every active habit of the user
+(`backend/src/modules/stats/`), with the same counting rules as the weekly rate:
+
+| Period | Buckets, oldest first |
+|---|---|
+| `week` | the last 7 days, one per day |
+| `month` | the last 30 days, one per day |
+| `year` | the last 12 calendar months, one per month |
+
+Each bucket carries the build habits' `days`, `done`, `missed` and `rate`, and
+the break habits' `relapses`; `total` adds the buckets up. Because today counts
+only once it is done, today's own bucket reads 100% after the first check-in,
+so the Statistics page draws today's column as done out of every build habit,
+as the Today screen does.
+
 ## Whose "today"
 
 A day is a calendar date in the **user's time zone**. The SPA sends it on every

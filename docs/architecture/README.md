@@ -61,7 +61,7 @@ How Habit Shaper is built. Start here, then read the one file your task needs.
 │   ├── src/server.ts    listens
 │   ├── src/lib/         crypto, password, totp, challenge, tokens, errors, http, validation, dates, streaks
 │   ├── src/plugins/     config, mysql, redis, rate-limit, errors (the envelope), auth (`app.authenticate`), services, helmet, compress, under-pressure
-│   ├── src/modules/     auth/ account/ users/ habits/ goals/ health/: routes · schemas · service · repository · serialize
+│   ├── src/modules/     auth/ account/ users/ habits/ goals/ stats/ health/: routes · schemas · service · repository · serialize
 │   └── test/
 └── frontend/
     ├── nginx.conf       the production server block

@@ -89,6 +89,13 @@ export function countSpan(logged: string[], startedOn: string, today: string, fr
   return { days: Math.max(0, end - first + 1), done };
 }
 
+/** Days of `logged` between `from` and `to`, both inclusive: a break habit's relapses in a span. */
+export function loggedIn(logged: string[], startedOn: string, today: string, from: string, to: string): number {
+  const lo = Math.max(toDayNumber(from), toDayNumber(startedOn));
+  const hi = Math.min(toDayNumber(to), toDayNumber(today));
+  return [...inRange(logged, startedOn, today)].filter((n) => n >= lo && n <= hi).length;
+}
+
 /** ISO weeks (Monday–Sunday) from the one holding `today` back to the one holding `startedOn`, newest first, at most `limit`. */
 export function weeklySummary(logged: string[], startedOn: string, today: string, limit = 8): WeekSummary[] {
   const first = toDayNumber(weekStart(startedOn));

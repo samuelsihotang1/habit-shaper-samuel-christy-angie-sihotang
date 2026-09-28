@@ -42,3 +42,13 @@ export function weekStart(day: string): string {
   const weekday = (new Date(n * DAY_MS).getUTCDay() + 6) % 7; // Monday 0 … Sunday 6
   return fromDayNumber(n - weekday);
 }
+
+/** The first day of the month `day` falls in. */
+export const monthStart = (day: string): string => `${day.slice(0, 7)}-01`;
+
+/** The first day of the month `months` away from the one `day` falls in. */
+export function addMonths(day: string, months: number): string {
+  const date = new Date(`${monthStart(day)}T00:00:00Z`);
+  date.setUTCMonth(date.getUTCMonth() + months);
+  return date.toISOString().slice(0, 10);
+}

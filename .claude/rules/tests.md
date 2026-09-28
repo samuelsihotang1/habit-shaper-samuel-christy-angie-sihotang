@@ -54,6 +54,7 @@ How the suites run is `CLAUDE.md` §1. That every edit ships with its test is
 | `habits.test.ts` "never shows, logs, edits or deletes someone else's habit" | `RULES.md` §1.2 for habits and their logs |
 | `goals.test.ts` "never edits or deletes someone else's goal" | `RULES.md` §1.2 for goals |
 | `streaks.test.ts` | streak, clean streak and weekly rules (`docs/architecture/habits.md`) |
+| `stats.test.ts` "never counts someone else's habits" | `RULES.md` §1.2 for statistics |
 | `auth.test.ts` "stores the password as an argon2id hash" | argon2id with the parameters in `lib/password.ts` |
 | `habits.test.ts` "refuses a request without a session before it reads the body" | `app.authenticate` runs `onRequest`, before validation |
 | `validation.test.ts` | every route-schema sentence, `normalize` before length checks, the `$data` confirmation, response schemas dropping unlisted keys |

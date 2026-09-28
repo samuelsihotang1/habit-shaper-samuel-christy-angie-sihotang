@@ -180,7 +180,7 @@ plugins/errors.ts  refusal / ValidationFailed / Fastify 4xx / anything else → 
 | `GET /account/devices` | trusted devices, most recently used first |
 | `DELETE /account/devices/all` · `/account/devices/:id` | scoped by user in the same query; a stranger's id is 404 |
 
-**Habits and goals (`authenticate`)**. Every one takes `?tz=` (`habits.md`); writes share 120/min per user.
+**Habits, goals and statistics (`authenticate`)**. Every one takes `?tz=` (`habits.md`); writes share 120/min per user.
 
 | Path | Notes |
 |---|---|
@@ -191,5 +191,6 @@ plugins/errors.ts  refusal / ValidationFailed / Fastify 4xx / anything else → 
 | `PUT` · `DELETE /habits/:id/logs/:date` | mark or clear one day (`YYYY-MM-DD`), idempotent; answers the updated habit |
 | `GET /goals` · `POST /goals` | `{ habit_id, title, target_days?, notes? }`; each goal embeds its habit and `progress` |
 | `PUT /goals/:id` · `DELETE /goals/:id` | same body as `POST`; delete removes the row |
+| `GET /stats?period=week\|month\|year` | every active habit added up per bucket (`habits.md`, Statistics); `period` defaults to `week` |
 
-A stranger's habit or goal id is 404 on every route, from the same `where { id, userId }`.
+Statistics add up only the caller's habits. A stranger's habit or goal id is 404 on every route, from the same `where { id, userId }`.
