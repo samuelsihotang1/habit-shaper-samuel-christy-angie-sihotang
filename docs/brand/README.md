@@ -27,7 +27,9 @@ Always "Habit Shaper", two words, both capitalised. Not "HabitShaper",
 ## Logo
 
 The mark is a white glyph on a yellow tile, drawn on a 64-unit grid with a
-16-unit corner radius. `LogoMark` in `frontend/src/components/Shells.tsx` and
+16-unit corner radius. The glyph is an H in two leaning strokes, each with an
+arm reaching out along one crossbar line, turned half a circle onto each
+other; its tips are sharp for speed, the one place the brand is not round. `LogoMark` in `frontend/src/components/Shells.tsx` and
 `frontend/public/favicon.svg` draw the same paths; change all three together
 (`logo/*.svg` are generated from the same numbers).
 

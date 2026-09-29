@@ -1,10 +1,12 @@
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { act } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { Link, MemoryRouter, NavigationType, Route, Routes, useNavigate } from 'react-router';
 import { ScrollToTop, shouldResetScroll } from '@/components/ScrollToTop';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { HabitBubble } from '@/components/icons';
-import { AppShell, Logo } from '@/components/Shells';
+import { AppShell, Logo, LogoMark } from '@/components/Shells';
 import { ConfirmDialog, TextArea, TextField } from '@/components/ui';
 import './support';
 
@@ -154,6 +156,14 @@ describe('logo', () => {
     expect(container.textContent).toBe('Habit Shaper');
     const classes = [...container.querySelectorAll('*')].flatMap((element) => [...element.classList]);
     expect(classes.filter((name) => name.startsWith('text-brand'))).toEqual([]);
+  });
+
+  it('draws the same glyph as the favicon', () => {
+    act(() => root.render(<LogoMark />));
+    const drawn = [...container.querySelectorAll('path')].map((path) => path.getAttribute('d'));
+    const favicon = readFileSync(resolve(process.cwd(), 'public/favicon.svg'), 'utf8');
+    expect(drawn).toHaveLength(2);
+    expect([...favicon.matchAll(/ d="([^"]+)"/g)].map((match) => match[1])).toEqual(drawn);
   });
 });
 
