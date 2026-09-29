@@ -86,9 +86,13 @@ text (24px, or 18.5px bold) and non-text marks need 3:1.
 | `#B4B4B9` | `night` | 9.4 | secondary text on night (share image) |
 | `ink-muted` | `surface` | 5.3 | secondary text |
 | `ink-muted` | `canvas` | 4.9 | secondary text |
-| `danger` | `surface` | 3.8 | large text and icons only |
-| white | `danger` | 3.8 | the bold label on a danger button only |
-| `success` | `surface` | 2.6 | icons and fills only, never text |
+| `danger` | `surface` | 5.6 | any text: field errors |
+| `danger` | `danger-soft` | 4.6 | any text: the danger Alert |
+| white | `danger` | 5.6 | any text: the danger button |
+| `success` | `surface` | 5.7 | any text |
+| `success` | `success-soft` | 5.0 | any text: the On and Reached badges |
+| `line-strong` | `surface` | 3.3 | a field's border |
+| white | `accent-*` | 3.4–4.0 | habit icon glyphs and streak icons, never text |
 | `brand-strong` | `surface` | 2.1 | never text |
 | `brand` | `surface` | 1.7 | never text; a fill or a mark only |
 | white | `brand` | 1.7 | the logo glyph only, which is why the mark has a minimum size |
@@ -116,8 +120,8 @@ words; numbers that line up use tabular figures.
   24px; tiles and multi-line fields 16px. No square corners on anything a
   person touches.
 - **Icons** are 24px line icons with a round cap and join (`icons.tsx`). A
-  habit's icon sits on its accent circle (`HabitBubble`); nowhere else uses the
-  accent hues.
+  habit's icon sits on its accent circle (`HabitBubble`), white, or ink on
+  yellow; the streak flame and leaf are the only other accent uses.
 - **Progress** is drawn, not decorated: a yellow ring on night, a yellow bar on
   cream, yellow day tiles. Those three are the brand's only illustration.
 

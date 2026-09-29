@@ -124,22 +124,22 @@ export const HABIT_ICONS = [
 
 export type HabitIcon = (typeof HABIT_ICONS)[number];
 
-/** Each habit icon sits on its own colour, as the list rows in the reference do. */
+/** Each habit icon sits on its own colour, as the list rows in the reference do. The glyph is ink on yellow: white there is 1.7:1. */
 export const ICON_TONE: Record<HabitIcon, string> = {
-  water: 'bg-accent-blue',
-  book: 'bg-accent-orange',
-  run: 'bg-accent-teal',
-  meditate: 'bg-brand',
-  journal: 'bg-accent-purple',
-  sleep: 'bg-accent-blue',
-  heart: 'bg-accent-pink',
-  sun: 'bg-brand',
-  food: 'bg-accent-red',
-  phone: 'bg-accent-purple',
-  smoke: 'bg-accent-red',
-  coffee: 'bg-accent-orange',
-  star: 'bg-accent-green',
-  leaf: 'bg-accent-green',
+  water: 'bg-accent-blue text-white',
+  book: 'bg-accent-orange text-white',
+  run: 'bg-accent-teal text-white',
+  meditate: 'bg-brand text-ink',
+  journal: 'bg-accent-purple text-white',
+  sleep: 'bg-accent-blue text-white',
+  heart: 'bg-accent-pink text-white',
+  sun: 'bg-brand text-ink',
+  food: 'bg-accent-red text-white',
+  phone: 'bg-accent-purple text-white',
+  smoke: 'bg-accent-red text-white',
+  coffee: 'bg-accent-orange text-white',
+  star: 'bg-accent-green text-white',
+  leaf: 'bg-accent-green text-white',
 };
 
 export const ICON_LABEL: Record<HabitIcon, string> = {
@@ -170,7 +170,7 @@ const BUBBLE_GLYPH = { sm: 'size-4', md: 'size-5', lg: 'size-7', fill: 'size-1/2
 export function HabitBubble({ icon, size = 'md' }: { icon: string; size?: 'sm' | 'md' | 'lg' | 'fill' }) {
   const name: HabitIcon = isHabitIcon(icon) ? icon : 'star';
   return (
-    <span className={`inline-flex aspect-square shrink-0 items-center justify-center rounded-full text-white ${BUBBLE_BOX[size]} ${ICON_TONE[name]}`}>
+    <span className={`inline-flex aspect-square shrink-0 items-center justify-center rounded-full ${BUBBLE_BOX[size]} ${ICON_TONE[name]}`}>
       <Icon name={name} className={BUBBLE_GLYPH[size]} />
     </span>
   );

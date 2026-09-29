@@ -11,8 +11,9 @@
     --brand-soft: #fdf5e4;
     --night: #0d0d0d;
     --night-soft: #262626;
-    --danger: #f04438;
-    --success: #12b76a;
+    --danger: #c8281c;
+    --success: #067647;
+    --line-strong: #8e8e93;
 
     --bg: #f5f6f7;
     --surface: #ffffff;
@@ -181,9 +182,9 @@
   .btn { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 24px; border-radius: 999px; font: 600 16px var(--sans); border: 0; }
   .btn.primary { background: var(--brand); color: #0d0d0d; }
   .btn.dark { background: var(--night); color: #fff; }
-  .field { width: 100%; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font: 500 16px var(--sans); padding: 12px 20px; border-radius: 999px; }
+  .field { width: 100%; border: 1px solid var(--line-strong); background: var(--surface); color: var(--ink); font: 500 16px var(--sans); padding: 12px 20px; border-radius: 999px; }
   .field.area { border-radius: 16px; padding: 12px 16px; min-height: 96px; resize: vertical; line-height: 1.6; display: block; }
-  .field::placeholder { color: var(--muted); opacity: .8; }
+  .field::placeholder { color: var(--muted); opacity: 1; }
   .stack { display: grid; gap: 12px; }
   .bar { height: 10px; border-radius: 999px; background: var(--track); }
   .bar div { height: 100%; width: 71%; border-radius: inherit; background: var(--brand); }
@@ -399,8 +400,9 @@
     ['surface', '#FFFFFF', 'Cards, inputs'],
     ['ink-muted', '#6B6B70', 'Secondary text'],
     ['line', '#EAEBED', 'The rare divider'],
-    ['danger', '#F04438', 'Relapse, delete'],
-    ['success', '#12B76A', 'Confirmations, reached'],
+    ['line-strong', '#8E8E93', 'Field borders'],
+    ['danger', '#C8281C', 'Relapse, delete'],
+    ['success', '#067647', 'Confirmations, reached'],
   ];
   const box = document.getElementById('swatches');
   for (const [name, hex, use] of swatches) {
@@ -431,7 +433,7 @@
     star: '<path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2L12 17.3l-5.6 2.9 1.1-6.2L3 9.6l6.2-.9Z"/>',
   };
   const svg = (name) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICON[name]}</svg>`;
-  const accents = [['blue', '#3B82F6', 'water'], ['orange', '#FF8A3D', 'book'], ['teal', '#14B8A6', 'run'], ['green', '#22C55E', 'leaf'], ['purple', '#A855F7', 'star'], ['red', '#EF4444', 'smoke'], ['pink', '#EC4899', 'coffee']];
+  const accents = [['blue', '#3B82F6', 'water'], ['orange', '#E4610F', 'book'], ['teal', '#0D9488', 'run'], ['green', '#15A046', 'leaf'], ['purple', '#A855F7', 'star'], ['red', '#EF4444', 'smoke'], ['pink', '#EC4899', 'coffee']];
   document.getElementById('accents').innerHTML = accents
     .map(([n, hex, icon]) => `<span style="background:${hex}" title="accent-${n} ${hex}">${svg(icon)}</span>`).join('');
   document.getElementById('icons').innerHTML = ['water', 'book', 'run', 'meditate', 'flame', 'smoke', 'star']
@@ -449,15 +451,19 @@
     ['brand', '#FEBA33', 'night', '#0D0D0D', 'Any text: the only place yellow is text'],
     ['ink-muted', '#6B6B70', 'surface', '#FFFFFF', 'Secondary text'],
     ['ink-muted', '#6B6B70', 'canvas', '#F5F6F7', 'Secondary text'],
-    ['danger', '#F04438', 'surface', '#FFFFFF', 'Large text and icons only'],
-    ['success', '#12B76A', 'surface', '#FFFFFF', 'Icons and fills only'],
+    ['danger', '#C8281C', 'surface', '#FFFFFF', 'Any text: field errors'],
+    ['danger', '#C8281C', 'danger-soft', '#FEE4E2', 'Any text: the danger Alert'],
+    ['success', '#067647', 'success-soft', '#D1FADF', 'Any text: On and Reached badges'],
+    ['white', '#FFFFFF', 'accent-orange', '#E4610F', 'Habit icon glyph', 3],
+    ['line-strong', '#8E8E93', 'surface', '#FFFFFF', 'A field border', 3],
     ['brand-strong', '#F2A516', 'surface', '#FFFFFF', 'Never text'],
     ['brand', '#FEBA33', 'surface', '#FFFFFF', 'Never text; a fill or mark only'],
   ];
-  document.getElementById('contrast').innerHTML = pairs.map(([fn, fg, bn, bg, use]) => {
+  document.getElementById('contrast').innerHTML = pairs.map(([fn, fg, bn, bg, use, need = 4.5]) => {
     const r = ratio(fg, bg);
-    const cls = r >= 4.5 ? 'ok' : r >= 3 ? 'warn' : 'no';
-    const verdict = r >= 4.5 ? 'AA text' : r >= 3 ? 'Large only' : 'Fails';
+    // need 3: an icon or a control's edge, which WCAG measures at 3:1
+    const cls = r >= need ? 'ok' : r >= 3 ? 'warn' : 'no';
+    const verdict = need === 3 ? (r >= 3 ? 'AA non-text' : 'Fails') : r >= 4.5 ? 'AA text' : r >= 3 ? 'Large only' : 'Fails';
     return `<tr><td><span class="pair" style="background:${bg};color:${fg};box-shadow:inset 0 0 0 1px rgba(0,0,0,.08)">Aa</span></td>` +
       `<td><b>${fn}</b> on <b>${bn}</b></td><td class="num">${r.toFixed(1)}:1 <span class="pill ${cls}">${verdict}</span></td><td>${use}</td></tr>`;
   }).join('');

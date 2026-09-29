@@ -101,7 +101,7 @@ function HabitForm({ id, initial, loading = false, loadError }: { id?: string; i
           required
           disabled={loading}
           aria-invalid={error?.field('name') ? true : undefined}
-          className="mt-4 w-full rounded-full bg-surface px-5 py-3 text-base text-ink placeholder:text-ink-muted/70 focus:outline-none focus:ring-2 focus:ring-brand"
+          className="mt-4 w-full rounded-full bg-surface px-5 py-3 text-base text-ink placeholder:text-ink-muted focus:outline-none focus:ring-2 focus:ring-brand"
         />
         {error?.field('name') ? <p className="mt-2 px-1 text-sm text-danger-soft">{error.field('name')}</p> : null}
       </section>

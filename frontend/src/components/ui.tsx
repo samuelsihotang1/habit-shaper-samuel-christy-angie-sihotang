@@ -89,8 +89,8 @@ export function IconButton({
 /** No radius here: `rounded-full` beside another `rounded-*` wins in Tailwind v4's output, so each field sets its own. */
 const fieldClass = (error?: string) =>
   cx(
-    'w-full border bg-surface py-3 text-base text-ink placeholder:text-ink-muted/70 focus:outline-none focus:ring-2',
-    error ? 'border-danger focus:ring-danger/25' : 'border-line focus:border-ink focus:ring-ink/10',
+    'w-full border bg-surface py-3 text-base text-ink placeholder:text-ink-muted focus:outline-none focus:ring-2',
+    error ? 'border-danger focus:ring-danger/25' : 'border-line-strong focus:border-ink focus:ring-ink/10',
   );
 
 function FieldFrame({ id, label, error, hint, className, children }: {

@@ -2,6 +2,7 @@ import { act } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { MemoryRouter } from 'react-router';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { HabitBubble } from '@/components/icons';
 import { Logo } from '@/components/Shells';
 import { ConfirmDialog, TextArea, TextField } from '@/components/ui';
 import './support';
@@ -79,5 +80,15 @@ describe('logo', () => {
     expect(container.textContent).toBe('Habit Shaper');
     const classes = [...container.querySelectorAll('*')].flatMap((element) => [...element.classList]);
     expect(classes.filter((name) => name.startsWith('text-brand'))).toEqual([]);
+  });
+});
+
+describe('habit bubble', () => {
+  it('draws the glyph in ink on yellow and white on every other colour', () => {
+    act(() => root.render(<HabitBubble icon="sun" />));
+    expect(container.firstElementChild!.classList).toContain('text-ink');
+    act(() => root.render(<HabitBubble icon="water" />));
+    expect(container.firstElementChild!.classList).toContain('text-white');
+    expect(container.firstElementChild!.classList).not.toContain('text-ink');
   });
 });

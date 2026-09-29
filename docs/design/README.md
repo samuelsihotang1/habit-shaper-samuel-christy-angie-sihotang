@@ -35,9 +35,15 @@ Tailwind v4 theme tokens in `frontend/src/index.css`. Use the token names
 | `night` / `night-soft` | `#0D0D0D` / `#262626` | hero cards, the tab bar, the chosen day |
 | `ink` / `ink-muted` | `#0D0D0D` / `#6B6B70` | text |
 | `line` | `#EAEBED` | the rare divider, chart grid |
-| `danger` / `danger-soft` | `#F04438` / `#FEE4E2` | relapses, delete |
-| `success` / `success-soft` | | confirmations, "Reached" |
-| `accent-*` | orange, green, purple, red, teal, pink, blue | habit icon circles only, never text |
+| `line-strong` | `#8E8E93` | field borders: a control's edge needs 3:1 |
+| `danger` / `danger-soft` | `#C8281C` / `#FEE4E2` | relapses, delete |
+| `success` / `success-soft` | `#067647` / `#D1FADF` | confirmations, "Reached" |
+| `accent-*` | orange, green, purple, red, teal, pink, blue | habit icon circles and the streak icons, never text; the glyph is white, or ink on a yellow circle |
+
+Every text pair is 4.5:1 or more and every icon or field edge 3:1;
+`frontend/test/contrast.test.ts` reads the tokens and checks each pair the app
+draws. Add a row there with a new pair. The exceptions are disabled controls
+and the chart's yellow columns, whose numbers are also in a table.
 
 **Yellow is never text on white**: it measures 1.7:1. A link on white is ink
 with a yellow underline; yellow text appears only on `night`.

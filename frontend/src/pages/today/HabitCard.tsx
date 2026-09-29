@@ -43,7 +43,7 @@ export const HabitCard = memo(function HabitCard({ habit, day, onToggle }: {
         <div className="min-w-0">
           <h3 className="truncate text-base font-bold text-ink">{habit.name}</h3>
           <p className="mt-0.5 flex items-center gap-1 text-sm text-ink-muted">
-            <Icon name={build ? 'flame' : 'leaf'} className={cx('size-4', build ? 'text-brand-strong' : 'text-accent-green')} />
+            <Icon name={build ? 'flame' : 'leaf'} className={cx('size-4', build ? 'text-accent-orange' : 'text-accent-green')} />
             {streakLabel(habit)}
           </p>
         </div>

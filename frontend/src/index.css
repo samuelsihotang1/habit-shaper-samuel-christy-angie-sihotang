@@ -14,19 +14,21 @@
   --color-night: #0d0d0d;
   --color-night-soft: #262626;
   --color-line: #eaebed;
+  /* A field's border: 3:1 on surface, the minimum for a control's edge. */
+  --color-line-strong: #8e8e93;
   --color-ink: #0d0d0d;
   --color-ink-muted: #6b6b70;
-  --color-danger: #f04438;
+  --color-danger: #c8281c;
   --color-danger-soft: #fee4e2;
-  --color-success: #12b76a;
+  --color-success: #067647;
   --color-success-soft: #d1fadf;
 
-  /* Habit icon bubbles; never text colours. */
-  --color-accent-orange: #ff8a3d;
-  --color-accent-green: #22c55e;
+  /* Habit icon bubbles and streak icons; never text colours. Each is 3:1 or more against white. */
+  --color-accent-orange: #e4610f;
+  --color-accent-green: #15a046;
   --color-accent-purple: #a855f7;
   --color-accent-red: #ef4444;
-  --color-accent-teal: #14b8a6;
+  --color-accent-teal: #0d9488;
   --color-accent-pink: #ec4899;
   --color-accent-blue: #3b82f6;
 
