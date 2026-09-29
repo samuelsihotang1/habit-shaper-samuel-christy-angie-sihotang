@@ -48,7 +48,9 @@ with a yellow underline; yellow text appears only on `night`.
 - Scale from the guideline: heading 32px (`text-heading`), title 24px
   (`text-title`), body 16px (`text-base`); secondary text `text-sm`.
 - Spacing is the 4px grid (Tailwind's own steps, 4–32px).
-- Shapes: buttons, inputs, tabs and list rows are full pills (`rounded-full`);
+- Shapes: buttons, single-line inputs, tabs and list rows are full pills
+  (`rounded-full`); the multi-line `TextArea` is `rounded-2xl`, since a pill
+  that tall turns into a capsule;
   cards `rounded-3xl`; day tiles `rounded-2xl`/`rounded-xl`.
 
 ## Screens

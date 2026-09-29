@@ -86,9 +86,10 @@ export function IconButton({
   );
 }
 
+/** No radius here: `rounded-full` beside another `rounded-*` wins in Tailwind v4's output, so each field sets its own. */
 const fieldClass = (error?: string) =>
   cx(
-    'w-full rounded-full border bg-surface px-5 py-3 text-base text-ink placeholder:text-ink-muted/70 focus:outline-none focus:ring-2',
+    'w-full border bg-surface py-3 text-base text-ink placeholder:text-ink-muted/70 focus:outline-none focus:ring-2',
     error ? 'border-danger focus:ring-danger/25' : 'border-line focus:border-ink focus:ring-ink/10',
   );
 
@@ -138,7 +139,7 @@ export function TextField({
           type={isPassword && reveal ? 'text' : type}
           aria-invalid={error ? true : undefined}
           aria-describedby={error ? `${id}-error` : undefined}
-          className={cx(fieldClass(error), isPassword && 'pr-20')}
+          className={cx(fieldClass(error), 'rounded-full px-5', isPassword && 'pr-20')}
         />
         {isPassword && (
           <button
@@ -169,7 +170,7 @@ export function TextArea({
         id={id}
         aria-invalid={error ? true : undefined}
         aria-describedby={error ? `${id}-error` : undefined}
-        className={cx(fieldClass(error), 'min-h-28 resize-y rounded-3xl')}
+        className={cx(fieldClass(error), 'block min-h-32 resize-y rounded-2xl px-4 leading-relaxed')}
       />
     </FieldFrame>
   );

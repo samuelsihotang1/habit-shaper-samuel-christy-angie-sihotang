@@ -2,7 +2,7 @@ import { act } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { MemoryRouter } from 'react-router';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { ConfirmDialog } from '@/components/ui';
+import { ConfirmDialog, TextArea, TextField } from '@/components/ui';
 import './support';
 
 let container: HTMLDivElement;
@@ -52,5 +52,22 @@ describe('confirm dialog', () => {
 
     expect(first).not.toHaveBeenCalled();
     expect(latest).toHaveBeenCalledTimes(1);
+  });
+});
+
+const radii = (element: Element) => [...element.classList].filter((name) => name.startsWith('rounded'));
+
+describe('field shapes', () => {
+  it('keeps the text input a pill and gives the textarea one smaller radius', () => {
+    act(() =>
+      root.render(
+        <>
+          <TextField label="Name" />
+          <TextArea label="Notes" />
+        </>,
+      ),
+    );
+    expect(radii(container.querySelector('input')!)).toEqual(['rounded-full']);
+    expect(radii(container.querySelector('textarea')!)).toEqual(['rounded-2xl']);
   });
 });
