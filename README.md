@@ -1,8 +1,8 @@
 # Habit Shaper
 
 A lightweight web app for building positive habits and breaking negative ones,
-through daily tracking and streaks. What is built so far is in
-[`PRD.md`](PRD.md).
+through daily tracking and streaks. What it does, and what it leaves out, is
+in [`PRD.md`](PRD.md).
 
 **Stack:** React 19 + Vite + Tailwind (frontend) · Node.js 24 + TypeScript +
 Fastify + `@fastify/mysql` (backend) · MySQL 9.7 · Docker Compose.
@@ -20,7 +20,8 @@ cd habit-shaper
 docker compose up --build
 ```
 
-Open **http://localhost:8080** and create an account.
+Open **http://localhost:8080** and create an account, or load the demo
+account below to see the app as someone a year into using it.
 
 The first start builds the images, generates the secrets and initialises
 MySQL, which takes a minute or two. The backend applies the database migrations by itself before it
@@ -34,7 +35,37 @@ starts serving, so there is nothing to run by hand.
 | Stop and **delete all data** | `docker compose down -v` |
 | Run the backend tests | `docker compose run --rm --build backend-test` |
 | Use another port | `APP_PORT=8090 docker compose up --build` |
-| Load the demo account (a year of data; sign-in in the file's header) | `docker compose exec -T db sh -c 'mysql -uroot -p"$(cat /secrets/mysql_root_password)" "$(cat /secrets/mysql_database)"' < db/demo.sql` |
+
+## Try the demo account
+
+`db/demo.sql` holds one account with a year of use: eight habits to build,
+three to break (with relapses), and nine goals, some reached. Every date is
+counted back from the day you load it, so the streaks and the statistics are
+current. It is never loaded on its own; with the stack running, load it from
+the repository root:
+
+```bash
+# macOS, Linux, Git Bash
+docker compose exec -T db sh -c 'MYSQL_PWD=$(cat /secrets/mysql_root_password) mysql -uroot $(cat /secrets/mysql_database)' < db/demo.sql
+```
+
+```powershell
+# Windows PowerShell
+Get-Content db/demo.sql -Raw | docker compose exec -T db sh -c 'MYSQL_PWD=$(cat /secrets/mysql_root_password) mysql -uroot $(cat /secrets/mysql_database)'
+```
+
+Then sign in at **http://localhost:8080**:
+
+| | |
+|---|---|
+| Email | `demo@habit.test` |
+| Password | `demo-habits-2026` |
+| Two-factor | off |
+
+Sign-in asks for the email first, then the password. Running the command
+again resets the demo account to a fresh copy; no other account is touched.
+The password is public, so never load the demo into an instance other people
+can reach.
 
 ## Configuration
 
@@ -61,8 +92,10 @@ To read the generated `APP_KEY` (back it up):
 | `MYSQL_USER` | `backend/.env` | `habit` | Database user the app connects as |
 | `MYSQL_PASSWORD` | `backend/.env` | generated on first boot | Its password. Letters and digits only |
 | `MYSQL_ROOT_PASSWORD` | `backend/.env` | generated on first boot | MySQL root password (also used by the test runner) |
+| `REDIS_PASSWORD` | `backend/.env` | generated on first boot | Password of the `redis` container that holds the rate-limit counters. Letters and digits only |
 | `LOG_LEVEL` | `backend/.env` | `info` | Backend log level |
 | `DATABASE_URL`, `TEST_DATABASE_URL`, `PORT`, `HOST` | `backend/.env` | none, none, `3000`, `127.0.0.1` | Without Docker only; Docker sets its own |
+| `REDIS_URL` | `backend/.env` | none | Without Docker only, and optional: empty counts rate limits in memory. Docker points it at its `redis` |
 | `BACKEND_URL` | `frontend/.env` | `http://localhost:3000` | Where `npm run dev` forwards `/api` |
 
 MySQL reads the `MYSQL_*` values only when it creates its data volume. To

@@ -4,7 +4,8 @@
 --
 -- Loaded by hand, never on boot, into the app's database:
 --   local:   mysql -uroot -p habit_shaper < db/demo.sql
---   Docker:  docker compose exec -T db sh -c 'mysql -uroot -p"$(cat /secrets/mysql_root_password)" "$(cat /secrets/mysql_database)"' < db/demo.sql
+--   Docker:  docker compose exec -T db sh -c 'MYSQL_PWD=$(cat /secrets/mysql_root_password) mysql -uroot $(cat /secrets/mysql_database)' < db/demo.sql
+--            (PowerShell: README.md, "Try the demo account")
 -- Never load it into a deployment other people can reach: the password above is public.
 --
 -- Running it again replaces the demo account and everything it owns (the
