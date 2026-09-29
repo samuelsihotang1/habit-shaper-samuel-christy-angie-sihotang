@@ -54,6 +54,7 @@ One row, not the folder.
 | compose, Dockerfiles, env vars, migrations on boot, nginx | `docs/architecture/deployment.md` |
 | stack, repository layout, known gaps | `docs/architecture/README.md` |
 | colour, spacing, components, states | `docs/design/README.md` |
+| the logo, brand voice, a brand asset or share image | `docs/brand/README.md` |
 | a threat, a rate limit, what the API must never send | `docs/security.md` |
 | is this feature in scope | `PRD.md` |
 | reversing something, or wondering why it is like this | `docs/decisions.md` |

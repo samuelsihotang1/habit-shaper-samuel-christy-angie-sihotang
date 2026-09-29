@@ -3,7 +3,7 @@
 The brief asks for a lightweight, simple, clean interface. The look follows the
 brand guideline of the Behance case study "Habit tracker mobile app - UIUX
 design" (Haptive): its palette, type, spacing and screens. This file is the
-whole design system.
+app's design system; the logo, voice and brand assets are `docs/brand/`.
 
 ---
 

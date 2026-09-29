@@ -1,0 +1,464 @@
+<title>Habit Shaper Brand</title>
+<meta name="description" content="Logo, colour, type, shape and voice for Habit Shaper.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+  /* Brand tokens mirror frontend/src/index.css; that file is the source. */
+  :root {
+    --brand: #feba33;
+    --brand-strong: #f2a516;
+    --brand-soft: #fdf5e4;
+    --night: #0d0d0d;
+    --night-soft: #262626;
+    --danger: #f04438;
+    --success: #12b76a;
+
+    --bg: #f5f6f7;
+    --surface: #ffffff;
+    --ink: #0d0d0d;
+    --muted: #6b6b70;
+    --line: #eaebed;
+    --chip-ok: #d1fadf;
+    --chip-ok-ink: #05603a;
+    --chip-warn: #fef0c7;
+    --chip-warn-ink: #7a4b00;
+    --chip-no: #fee4e2;
+    --chip-no-ink: #9f1c14;
+    --track: #fdf5e4;
+
+    --sans: 'Urbanist', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --bg: #0d0d0d;
+      --surface: #1a1a1b;
+      --ink: #f5f6f7;
+      --muted: #b4b4b9;
+      --line: #2e2e30;
+      --chip-ok: #0b3a25;
+      --chip-ok-ink: #a6f4c5;
+      --chip-warn: #3d2c07;
+      --chip-warn-ink: #fedf89;
+      --chip-no: #45120e;
+      --chip-no-ink: #fda29b;
+      --track: #2e2e30;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #0d0d0d;
+    --surface: #1a1a1b;
+    --ink: #f5f6f7;
+    --muted: #b4b4b9;
+    --line: #2e2e30;
+    --chip-ok: #0b3a25;
+    --chip-ok-ink: #a6f4c5;
+    --chip-warn: #3d2c07;
+    --chip-warn-ink: #fedf89;
+    --chip-no: #45120e;
+    --chip-no-ink: #fda29b;
+    --track: #2e2e30;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 500 16px/1.55 var(--sans);
+    -webkit-font-smoothing: antialiased;
+    padding-inline: 16px;
+    padding-block: 24px 64px;
+  }
+  .wrap { max-width: 1040px; margin: 0 auto; display: grid; gap: 56px; }
+  h1, h2, h3 { text-wrap: balance; margin: 0; }
+  h2 { font-size: 32px; line-height: 1.2; font-weight: 800; }
+  h3 { font-size: 18px; line-height: 1.3; font-weight: 700; }
+  p { margin: 0; max-width: 65ch; }
+  code, .mono { font-family: var(--mono); font-size: 13px; }
+  a { color: inherit; text-decoration: underline; text-decoration-color: var(--brand); text-decoration-thickness: 2px; text-underline-offset: 3px; }
+  :focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+  section { display: grid; gap: 24px; }
+  .lede { color: var(--muted); }
+  .head { display: grid; gap: 8px; }
+  .eyebrow { font-size: 13px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+  .card { background: var(--surface); border-radius: 24px; padding: 20px; }
+  .grid { display: grid; gap: 16px; }
+  .g2 { grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); }
+  .g3 { grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); }
+  .g4 { grid-template-columns: repeat(auto-fit, minmax(min(100%, 160px), 1fr)); }
+
+  /* Hero: the sign-in screen's black card */
+  .hero {
+    background: var(--night); color: #fff; border-radius: 32px;
+    padding: clamp(24px, 5vw, 48px);
+    display: grid; gap: 32px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); align-items: center;
+  }
+  .hero .logo { height: 44px; }
+  .hero .tag { color: var(--brand); font-weight: 700; font-size: 15px; }
+  .hero h1 { font-size: clamp(40px, 7vw, 72px); line-height: 1.05; font-weight: 800; letter-spacing: -.01em; }
+  .hero h1 span { color: var(--brand); }
+  .hero .copy { display: grid; gap: 16px; }
+  .hero p { color: #b4b4b9; }
+  .week { background: var(--night-soft); border-radius: 28px; padding: 24px; display: grid; gap: 16px; justify-items: center; max-width: 340px; width: 100%; justify-self: center; }
+  .week .n { font-size: 44px; font-weight: 800; }
+  .week small { color: #b4b4b9; font-size: 15px; }
+  .dots { display: flex; gap: 10px; }
+  .dots i { width: 26px; height: 26px; border-radius: 50%; background: var(--brand); display: block; }
+  .dots i.off { background: none; box-shadow: inset 0 0 0 2px #3a3a3c; }
+  .ring { position: relative; width: 168px; height: 168px; display: grid; place-items: center; }
+  .ring svg { position: absolute; inset: 0; transform: rotate(-90deg); }
+
+  /* Logo */
+  .ground { border-radius: 20px; min-height: 150px; display: grid; place-items: center; padding: 28px; }
+  .ground img { max-width: 100%; height: 56px; }
+  .ground.mark img { height: 72px; }
+  .g-white { background: #fff; box-shadow: inset 0 0 0 1px var(--line); }
+  .g-night { background: var(--night); }
+  .g-grey { background: #8a8a8f; }
+  .asset { display: grid; gap: 10px; }
+  .asset figcaption { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; font-size: 14px; }
+  .asset figcaption span { color: var(--muted); }
+  figure { margin: 0; }
+
+  .clear { position: relative; background: #fff; border-radius: 20px; padding: 40px; display: grid; place-items: center; box-shadow: inset 0 0 0 1px var(--line); }
+  .clear .box { position: relative; padding: 18px; background-image: repeating-linear-gradient(45deg, rgba(254,186,51,.35) 0 2px, transparent 2px 8px); border-radius: 8px; }
+  .clear img { display: block; width: 72px; height: 72px; }
+  .clear .lbl { position: absolute; top: 12px; left: 16px; font-size: 13px; color: #6b6b70; }
+  .sizes { display: flex; align-items: end; gap: 20px; flex-wrap: wrap; }
+  .sizes div { display: grid; gap: 6px; justify-items: center; font-size: 13px; color: var(--muted); }
+
+  .dont { position: relative; }
+  .dont .ground { min-height: 120px; overflow: hidden; }
+  .dont .ground img { height: 40px; }
+  .x { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 600; }
+  .x::before { content: ''; width: 18px; height: 18px; border-radius: 50%; background: var(--danger); flex: none;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='12'/%3E%3C/svg%3E"); }
+  .wm { font-size: 26px; display: flex; align-items: center; gap: 12px; color: #0d0d0d; }
+  .wm img { height: 40px; }
+  .wm b { font-weight: 800; }
+  .wm span { font-weight: 600; }
+
+  /* Colour */
+  .split { display: flex; height: 64px; border-radius: 16px; overflow: hidden; }
+  .split div { display: flex; align-items: end; padding: 10px 12px; font-size: 13px; font-weight: 700; }
+  .swatch { border-radius: 20px; overflow: hidden; background: var(--surface); display: grid; }
+  .swatch .chip { height: 84px; box-shadow: inset 0 0 0 1px rgba(0,0,0,.06); }
+  .swatch .meta { padding: 12px 14px 14px; display: grid; gap: 2px; }
+  .swatch .meta b { font-size: 15px; }
+  .swatch button { justify-self: start; font: 500 13px var(--mono); color: var(--muted); background: none; border: 0; padding: 0; cursor: pointer; }
+  .swatch button:hover { color: var(--ink); }
+  .swatch .use { font-size: 13px; color: var(--muted); }
+  .accents { display: flex; flex-wrap: wrap; gap: 10px; }
+  .accents span { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; color: #fff; }
+  .accents svg { width: 20px; height: 20px; }
+
+  .tablewrap { overflow-x: auto; background: var(--surface); border-radius: 24px; }
+  table { width: 100%; border-collapse: collapse; font-size: 15px; min-width: 560px; }
+  th, td { text-align: left; padding: 12px 16px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+  tr:last-child td { border-bottom: 0; }
+  th { font-size: 13px; color: var(--muted); font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+  td.num { font-variant-numeric: tabular-nums; font-weight: 700; }
+  .pair { display: inline-flex; align-items: center; justify-content: center; min-width: 44px; height: 30px; padding: 0 10px; border-radius: 999px; font-weight: 700; font-size: 14px; }
+  .pill { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 13px; font-weight: 700; white-space: nowrap; }
+  .ok { background: var(--chip-ok); color: var(--chip-ok-ink); }
+  .warn { background: var(--chip-warn); color: var(--chip-warn-ink); }
+  .no { background: var(--chip-no); color: var(--chip-no-ink); }
+
+  /* Type */
+  .spec { display: grid; gap: 0; background: var(--surface); border-radius: 24px; padding-inline: 20px; }
+  .spec > div { display: grid; grid-template-columns: 170px 1fr; gap: 16px; align-items: baseline; padding-block: 18px; border-bottom: 1px solid var(--line); }
+  .spec > div:last-child { border-bottom: 0; }
+  .spec .k { font-size: 13px; color: var(--muted); display: grid; }
+  .spec .k b { color: var(--ink); font-size: 14px; }
+  @media (max-width: 560px) { .spec > div { grid-template-columns: 1fr; gap: 6px; } }
+
+  /* Shape */
+  .btn { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 24px; border-radius: 999px; font: 600 16px var(--sans); border: 0; }
+  .btn.primary { background: var(--brand); color: #0d0d0d; }
+  .btn.dark { background: var(--night); color: #fff; }
+  .field { width: 100%; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font: 500 16px var(--sans); padding: 12px 20px; border-radius: 999px; }
+  .field.area { border-radius: 16px; padding: 12px 16px; min-height: 96px; resize: vertical; line-height: 1.6; display: block; }
+  .field::placeholder { color: var(--muted); opacity: .8; }
+  .stack { display: grid; gap: 12px; }
+  .bar { height: 10px; border-radius: 999px; background: var(--track); }
+  .bar div { height: 100%; width: 71%; border-radius: inherit; background: var(--brand); }
+  .tiles { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+  .tiles div { aspect-ratio: 1; border-radius: 12px; background: var(--track); display: grid; place-items: center; font-size: 13px; font-weight: 700; color: var(--muted); }
+  .tiles .on { background: var(--brand); color: #0d0d0d; }
+  .radii { display: flex; gap: 12px; flex-wrap: wrap; }
+  .radii div { width: 72px; height: 56px; background: var(--brand-soft); color: #0d0d0d; display: grid; place-items: end start; padding: 6px 8px; font-size: 12px; font-weight: 700; box-shadow: inset 0 0 0 1.5px var(--brand); }
+
+  /* Voice */
+  .dd { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 12px; }
+  .say { border-radius: 16px; padding: 14px 16px; display: grid; gap: 4px; }
+  .say small { font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+  .say.do { background: var(--surface); box-shadow: inset 3px 0 0 var(--success); }
+  .say.do small { color: var(--success); }
+  .say.dont { background: transparent; box-shadow: inset 0 0 0 1px var(--line); color: var(--muted); }
+  .say.dont small { color: var(--danger); }
+  .say.dont p { text-decoration: line-through; text-decoration-color: var(--danger); }
+
+  .og { border-radius: 20px; width: 100%; height: auto; display: block; }
+  .icons { display: flex; gap: 16px; align-items: end; flex-wrap: wrap; }
+  .icons figure { display: grid; gap: 6px; justify-items: center; font-size: 13px; color: var(--muted); }
+  .files { display: grid; gap: 8px; padding: 0; margin: 0; list-style: none; }
+  .files li { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 10px 14px; background: var(--surface); border-radius: 14px; }
+  .files span { color: var(--muted); font-size: 14px; }
+  footer { color: var(--muted); font-size: 14px; }
+  @media (prefers-reduced-motion: no-preference) {
+    .ring circle.arc { transition: stroke-dashoffset .8s cubic-bezier(.2,.8,.2,1); }
+  }
+</style>
+
+<div class="wrap">
+
+  <header class="hero">
+    <div class="copy">
+      <img class="logo" src="logo/horizontal-on-night.svg" alt="Habit Shaper" width="176" height="44" style="width:auto">
+      <p class="tag">Track habits. Stay consistent.</p>
+      <h1>Build the good ones. <span>Break the rest.</span></h1>
+      <p>Brand guidelines: the logo, colour, type, shape and voice of a small, calm tool that shows the one number that matters today and asks for one tap.</p>
+    </div>
+    <div class="week" aria-label="Example: 5 of 7 days done this week">
+      <div class="ring">
+        <svg viewBox="0 0 168 168" width="168" height="168" aria-hidden="true">
+          <circle cx="84" cy="84" r="70" fill="none" stroke="#3a3a3c" stroke-width="18"></circle>
+          <circle class="arc" cx="84" cy="84" r="70" fill="none" stroke="#feba33" stroke-width="18" stroke-linecap="round" stroke-dasharray="439.82" stroke-dashoffset="125.66"></circle>
+        </svg>
+        <span class="n">5/7</span>
+      </div>
+      <small>days done this week</small>
+      <div class="dots" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i class="off"></i><i class="off"></i></div>
+    </div>
+  </header>
+
+  <section id="logo">
+    <div class="head">
+      <span class="eyebrow">Logo</span>
+      <h2>A yellow tile, a white glyph</h2>
+      <p class="lede">Drawn on a 64-unit grid with a 16-unit corner. The wordmark is Urbanist: “Habit” at 600, “Shaper” at 800. On white it is ink throughout and the tile carries the colour.</p>
+    </div>
+    <div class="grid g3">
+      <figure class="asset"><div class="ground g-white"><img src="logo/horizontal.svg" alt="Horizontal lockup on white"></div><figcaption><b>horizontal.svg</b><span>white, canvas</span></figcaption></figure>
+      <figure class="asset"><div class="ground g-night"><img src="logo/horizontal-on-night.svg" alt="Horizontal lockup on night"></div><figcaption><b>horizontal-on-night.svg</b><span>night only</span></figcaption></figure>
+      <figure class="asset"><div class="ground g-white mark"><img src="logo/mark.svg" alt="Mark"></div><figcaption><b>mark.svg</b><span>favicon, avatar</span></figcaption></figure>
+      <figure class="asset"><div class="ground g-night mark"><img src="logo/mark-on-night.svg" alt="Mark on night"></div><figcaption><b>mark-on-night.svg</b><span>dark previews</span></figcaption></figure>
+      <figure class="asset"><div class="ground g-white mark"><img src="logo/mark-mono-black.svg" alt="Mono black mark"></div><figcaption><b>mark-mono-black.svg</b><span>one-colour print</span></figcaption></figure>
+      <figure class="asset"><div class="ground g-grey mark"><img src="logo/mark-mono-white.svg" alt="Mono white mark"></div><figcaption><b>mark-mono-white.svg</b><span>dark or busy grounds</span></figcaption></figure>
+    </div>
+
+    <div class="grid g2">
+      <div class="card stack">
+        <h3>Clear space and size</h3>
+        <p class="lede">Keep a quarter of the mark's width clear on every side. The mark goes no smaller than 24px, the lockup no narrower than 120px.</p>
+        <div class="clear"><span class="lbl">¼ mark on every side</span><div class="box"><img src="logo/mark.svg" alt=""></div></div>
+        <div class="sizes">
+          <div><img src="logo/mark.svg" alt="" width="64" height="64">64</div>
+          <div><img src="logo/mark.svg" alt="" width="40" height="40">40</div>
+          <div><img src="logo/mark.svg" alt="" width="24" height="24">24 min</div>
+          <div><img src="logo/horizontal.svg" alt="" height="24" style="width:auto">120 min</div>
+        </div>
+      </div>
+      <div class="card stack">
+        <h3>Don't</h3>
+        <div class="grid g2" style="gap:12px">
+          <figure class="asset dont"><div class="ground g-white"><div class="wm"><img src="logo/mark.svg" alt=""><span>Habit <b style="color:#f2a516">Shaper</b></span></div></div><figcaption><span class="x">Yellow text on white, 2.1:1</span></figcaption></figure>
+          <figure class="asset dont"><div class="ground" style="background:#feba33"><img src="logo/mark.svg" alt="" style="height:56px"></div><figcaption><span class="x">The mark on yellow</span></figcaption></figure>
+          <figure class="asset dont"><div class="ground g-white"><img src="logo/horizontal.svg" alt="" style="transform:scaleX(1.5)"></div><figcaption><span class="x">Stretch or squash</span></figcaption></figure>
+          <figure class="asset dont"><div class="ground g-white"><img src="logo/mark.svg" alt="" style="height:56px;transform:rotate(-14deg);filter:drop-shadow(0 8px 10px rgba(0,0,0,.35))"></div><figcaption><span class="x">Rotate or add a shadow</span></figcaption></figure>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="colour">
+    <div class="head">
+      <span class="eyebrow">Colour</span>
+      <h2>Mostly white, some night, a little yellow</h2>
+      <p class="lede">Yellow marks the one action, the active state and progress. It is text only on night.</p>
+    </div>
+    <div class="split" role="img" aria-label="Proportions: 60% canvas and surface, 30% night and ink, 10% brand yellow">
+      <div style="flex:60;background:#f5f6f7;color:#0d0d0d;box-shadow:inset 0 0 0 1px var(--line);border-radius:16px 0 0 16px">60 canvas, surface</div>
+      <div style="flex:30;background:#0d0d0d;color:#fff">30 night, ink</div>
+      <div style="flex:10;background:#feba33;color:#0d0d0d">10</div>
+    </div>
+    <div class="grid g4" id="swatches"></div>
+    <div class="card stack">
+      <h3>Habit accents</h3>
+      <p class="lede">Seven hues, only behind a habit's icon. Never text, never in the logo or a headline.</p>
+      <div class="accents" id="accents"></div>
+    </div>
+
+    <div class="head"><h3>Contrast</h3><p class="lede">WCAG 2 ratios from the token values. Body text needs 4.5:1; large text and non-text marks need 3:1.</p></div>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Sample</th><th>Foreground on background</th><th>Ratio</th><th>Use</th></tr></thead>
+        <tbody id="contrast"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="type">
+    <div class="head">
+      <span class="eyebrow">Typography</span>
+      <h2>Urbanist, 400 to 800</h2>
+      <p class="lede">One family, set in sentence case. Weight does the work that a second face would do elsewhere.</p>
+    </div>
+    <div class="spec">
+      <div><span class="k"><b>Display</b>64–80 / 1.1 · 800</span><span style="font-size:clamp(36px,6vw,64px);line-height:1.1;font-weight:800">Break the rest.</span></div>
+      <div><span class="k"><b>Heading</b>32 / 1.2 · 700</span><span style="font-size:32px;line-height:1.2;font-weight:700">Welcome back</span></div>
+      <div><span class="k"><b>Title</b>24 / 1.3 · 700</span><span style="font-size:24px;line-height:1.3;font-weight:700">Weekly completion</span></div>
+      <div><span class="k"><b>Body</b>16 / 1.5 · 400–500</span><span>Check it off each day you do it. Consecutive days make your streak.</span></div>
+      <div><span class="k"><b>Label</b>14–16 · 600</span><span style="font-weight:600">Save goal</span></div>
+      <div><span class="k"><b>Secondary</b>14 · 400–500</span><span style="font-size:14px;color:var(--muted)">Days before this do not count as missed.</span></div>
+    </div>
+  </section>
+
+  <section id="shape">
+    <div class="head">
+      <span class="eyebrow">Shape and icons</span>
+      <h2>Round where a finger lands</h2>
+      <p class="lede">Actions and single-line inputs are pills, cards 24px, tiles and multi-line fields 16px. Progress is the only illustration: a ring on night, a bar on cream, yellow day tiles.</p>
+    </div>
+    <div class="grid g2">
+      <div class="card stack">
+        <div class="radii"><div style="border-radius:999px">full</div><div style="border-radius:24px">24</div><div style="border-radius:16px">16</div><div style="border-radius:12px">12</div></div>
+        <button class="btn primary" type="button">Save goal</button>
+        <button class="btn dark" type="button">Create a habit</button>
+        <label class="stack" for="demo-name" style="gap:8px"><b style="font-size:14px">Name</b><input id="demo-name" class="field" placeholder="Read 10 pages"></label>
+        <label class="stack" for="demo-notes" style="gap:8px"><b style="font-size:14px">Notes</b><textarea id="demo-notes" class="field area" placeholder="Why this matters to you"></textarea></label>
+      </div>
+      <div class="card stack">
+        <h3>Progress</h3>
+        <div class="bar" role="img" aria-label="71 percent"><div></div></div>
+        <div class="tiles" aria-hidden="true"><div class="on">M</div><div class="on">T</div><div class="on">W</div><div>T</div><div class="on">F</div><div class="on">S</div><div>S</div></div>
+        <h3 style="margin-top:8px">Line icons, 24px, 2px stroke, round caps</h3>
+        <div class="accents" id="icons"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="voice">
+    <div class="head">
+      <span class="eyebrow">Voice</span>
+      <h2>Calm, short, in the second person</h2>
+      <p class="lede">Say what happened, then what to do. No exclamation marks, no guilt about a missed day. The full bank is <code>voice.md</code>.</p>
+    </div>
+    <div class="dd">
+      <div class="say do"><small>Do</small><p>Could not reach the server. Check your connection and try again.</p></div>
+      <div class="say dont"><small>Don't</small><p>Oops! Network error (ERR_503) 😢</p></div>
+      <div class="say do"><small>Do</small><p>Your clean streak starts again the next day. You can undo this.</p></div>
+      <div class="say dont"><small>Don't</small><p>Are you sure? This cannot be undone!</p></div>
+      <div class="say do"><small>Do</small><p>Password changed.</p></div>
+      <div class="say dont"><small>Don't</small><p>Awesome! Your password was successfully updated! 🎉</p></div>
+    </div>
+  </section>
+
+  <section id="assets">
+    <div class="head">
+      <span class="eyebrow">Assets</span>
+      <h2>Files in this folder</h2>
+    </div>
+    <figure class="asset">
+      <img class="og" src="social/og-image.png" alt="Share image: Build the good ones. Break the rest." width="1200" height="630">
+      <figcaption><b>social/og-image.png</b><span>1200×630 link preview, also served as /og-image.png</span></figcaption>
+    </figure>
+    <div class="card">
+      <div class="icons">
+        <figure><img src="app-icon/icon-512.png" alt="" width="96" height="96">icon-512</figure>
+        <figure><img src="app-icon/icon-192.png" alt="" width="64" height="64">icon-192</figure>
+        <figure><img src="app-icon/icon-180.png" alt="" width="60" height="60" style="border-radius:14px">icon-180 (iOS rounds it)</figure>
+        <figure><img src="app-icon/icon-512-maskable.png" alt="" width="96" height="96" style="border-radius:50%">maskable</figure>
+      </div>
+    </div>
+    <ul class="files">
+      <li><code>logo/</code><span>mark and lockups, SVG, text outlined</span></li>
+      <li><code>social/</code><span>share image, SVG and PNG</span></li>
+      <li><code>app-icon/</code><span>180, 192, 512 and maskable 512, PNG</span></li>
+      <li><code>README.md</code><span>these rules as text</span></li>
+      <li><code>voice.md</code><span>copy bank</span></li>
+    </ul>
+  </section>
+
+  <footer>Tokens live in <code>frontend/src/index.css</code>; components in <code>docs/design/README.md</code>. If this page and the code disagree, the code wins.</footer>
+</div>
+
+<script>
+  const swatches = [
+    ['brand', '#FEBA33', 'Primary button, active tab, done day'],
+    ['brand-strong', '#F2A516', 'Hover on brand'],
+    ['brand-soft', '#FDF5E4', 'Unchecked day, progress track'],
+    ['night', '#0D0D0D', 'Hero cards, tab bar, text'],
+    ['night-soft', '#262626', 'Cards on night'],
+    ['canvas', '#F5F6F7', 'Page ground'],
+    ['surface', '#FFFFFF', 'Cards, inputs'],
+    ['ink-muted', '#6B6B70', 'Secondary text'],
+    ['line', '#EAEBED', 'The rare divider'],
+    ['danger', '#F04438', 'Relapse, delete'],
+    ['success', '#12B76A', 'Confirmations, reached'],
+  ];
+  const box = document.getElementById('swatches');
+  for (const [name, hex, use] of swatches) {
+    const el = document.createElement('div');
+    el.className = 'swatch';
+    el.innerHTML = `<div class="chip" style="background:${hex}"></div><div class="meta"><b>${name}</b><button type="button" title="Copy ${hex}">${hex}</button><span class="use">${use}</span></div>`;
+    const btn = el.querySelector('button');
+    btn.addEventListener('click', () => {
+      const done = () => { btn.textContent = 'Copied'; setTimeout(() => (btn.textContent = hex), 1200); };
+      navigator.clipboard?.writeText(hex).then(done, () => {
+        const range = document.createRange(); range.selectNodeContents(btn);
+        const sel = getSelection(); sel.removeAllRanges(); sel.addRange(range);
+      });
+    });
+    box.append(el);
+  }
+
+  // Paths copied from frontend/src/components/icons.tsx
+  const ICON = {
+    water: '<path d="M12 21.5a6.5 6.5 0 0 0 6.5-6.5c0-4-4-7.5-6.5-12.5C9.5 7.5 5.5 11 5.5 15a6.5 6.5 0 0 0 6.5 6.5Z"/>',
+    book: '<path d="M3 4.5h5.5A3.5 3.5 0 0 1 12 8v13a2.5 2.5 0 0 0-2.5-2.5H3ZM21 4.5h-5.5A3.5 3.5 0 0 0 12 8v13a2.5 2.5 0 0 1 2.5-2.5H21Z"/>',
+    run: '<circle cx="15.5" cy="3.5" r="2"/><path d="M14 7l-2.5 6.5M11.5 13.5l4 2.5-1 5M11.5 13.5l-2 4.5-4.5.5M14 7l-4 1.5-2 3M14 7l2.5 3.5 3 .5"/>',
+    meditate: '<circle cx="12" cy="5" r="2.2"/><path d="M12 9v5M5 12.5c2 0 3.5-1 4.5-3h5c1 2 2.5 3 4.5 3M4 19.5c2.5-1.5 5-2 8-2s5.5.5 8 2M8.5 16.5 12 14l3.5 2.5"/>',
+    smoke: '<path d="M2.5 15.5h14v4h-14ZM19 15.5v4M21.5 15.5v4M19 12.5c0-2-2-2-2-4s2-2 2-4M21.5 12.5c0-2-2-2-2-4s2-2 2-4"/>',
+    coffee: '<path d="M4 8.5h13v6a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5ZM17 10h1.5a2.5 2.5 0 0 1 0 5H17M7.5 2.5v3M11 2.5v3M14.5 2.5v3"/>',
+    leaf: '<path d="M5 20.5c0-8 4.5-14 15.5-15.5C19 16 13 19.5 5 20.5Zm0 0 8-8"/>',
+    flame: '<path d="M12 21.5a7 7 0 0 0 7-7c0-4-3-6.5-4.5-9.5-.5 2.5-2 4-3.5 4.5.5-2-.5-4.5-2.5-6-.5 3.5-3.5 6.5-3.5 11a7 7 0 0 0 7 7Z"/>',
+    star: '<path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2L12 17.3l-5.6 2.9 1.1-6.2L3 9.6l6.2-.9Z"/>',
+  };
+  const svg = (name) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICON[name]}</svg>`;
+  const accents = [['blue', '#3B82F6', 'water'], ['orange', '#FF8A3D', 'book'], ['teal', '#14B8A6', 'run'], ['green', '#22C55E', 'leaf'], ['purple', '#A855F7', 'star'], ['red', '#EF4444', 'smoke'], ['pink', '#EC4899', 'coffee']];
+  document.getElementById('accents').innerHTML = accents
+    .map(([n, hex, icon]) => `<span style="background:${hex}" title="accent-${n} ${hex}">${svg(icon)}</span>`).join('');
+  document.getElementById('icons').innerHTML = ['water', 'book', 'run', 'meditate', 'flame', 'smoke', 'star']
+    .map((icon) => `<span style="background:var(--bg);color:var(--ink)" title="${icon}">${svg(icon)}</span>`).join('');
+
+  // Ratios computed from the hex values, WCAG 2 relative luminance.
+  const lum = (h) => {
+    const c = [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16) / 255).map((v) => (v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4));
+    return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
+  };
+  const ratio = (a, b) => { const x = lum(a), y = lum(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); };
+  const pairs = [
+    ['ink', '#0D0D0D', 'surface', '#FFFFFF', 'Any text'],
+    ['ink', '#0D0D0D', 'brand', '#FEBA33', 'Any text: the label on a yellow button'],
+    ['brand', '#FEBA33', 'night', '#0D0D0D', 'Any text: the only place yellow is text'],
+    ['ink-muted', '#6B6B70', 'surface', '#FFFFFF', 'Secondary text'],
+    ['ink-muted', '#6B6B70', 'canvas', '#F5F6F7', 'Secondary text'],
+    ['danger', '#F04438', 'surface', '#FFFFFF', 'Large text and icons only'],
+    ['success', '#12B76A', 'surface', '#FFFFFF', 'Icons and fills only'],
+    ['brand-strong', '#F2A516', 'surface', '#FFFFFF', 'Never text'],
+    ['brand', '#FEBA33', 'surface', '#FFFFFF', 'Never text; a fill or mark only'],
+  ];
+  document.getElementById('contrast').innerHTML = pairs.map(([fn, fg, bn, bg, use]) => {
+    const r = ratio(fg, bg);
+    const cls = r >= 4.5 ? 'ok' : r >= 3 ? 'warn' : 'no';
+    const verdict = r >= 4.5 ? 'AA text' : r >= 3 ? 'Large only' : 'Fails';
+    return `<tr><td><span class="pair" style="background:${bg};color:${fg};box-shadow:inset 0 0 0 1px rgba(0,0,0,.08)">Aa</span></td>` +
+      `<td><b>${fn}</b> on <b>${bn}</b></td><td class="num">${r.toFixed(1)}:1 <span class="pill ${cls}">${verdict}</span></td><td>${use}</td></tr>`;
+  }).join('');
+</script>

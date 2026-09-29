@@ -15,11 +15,14 @@ export function LogoMark({ className = 'size-10' }: { className?: string }) {
   );
 }
 
+/** Ink on white: yellow text there is 2.1:1. The lockup is `docs/brand/logo/horizontal.svg`. */
 export function Logo() {
   return (
-    <span className="inline-flex items-center gap-2.5 text-lg font-bold text-ink">
+    <span className="inline-flex items-center gap-2.5 text-lg text-ink">
       <LogoMark />
-      Habit <span className="-ml-1.5 text-brand-strong">Shaper</span>
+      <span className="font-semibold">
+        Habit <span className="font-extrabold">Shaper</span>
+      </span>
     </span>
   );
 }

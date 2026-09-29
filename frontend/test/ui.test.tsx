@@ -2,6 +2,7 @@ import { act } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { MemoryRouter } from 'react-router';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { Logo } from '@/components/Shells';
 import { ConfirmDialog, TextArea, TextField } from '@/components/ui';
 import './support';
 
@@ -69,5 +70,14 @@ describe('field shapes', () => {
     );
     expect(radii(container.querySelector('input')!)).toEqual(['rounded-full']);
     expect(radii(container.querySelector('textarea')!)).toEqual(['rounded-2xl']);
+  });
+});
+
+describe('logo', () => {
+  it('sets the wordmark in ink, never yellow on white', () => {
+    act(() => root.render(<Logo />));
+    expect(container.textContent).toBe('Habit Shaper');
+    const classes = [...container.querySelectorAll('*')].flatMap((element) => [...element.classList]);
+    expect(classes.filter((name) => name.startsWith('text-brand'))).toEqual([]);
   });
 });
