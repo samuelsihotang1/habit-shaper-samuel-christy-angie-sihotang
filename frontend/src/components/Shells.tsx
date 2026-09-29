@@ -30,9 +30,11 @@ export function Logo() {
 /**
  * The phone-width column every screen lives in, on every screen size: the
  * reference is a mobile app, and a wider layout would be a different design.
+ * `dvh`, not `screen`: on a phone `100vh` is the height with the address bar
+ * hidden, so a short page still scrolls by the bar's height.
  */
 function Column({ children, className }: { children: ReactNode; className?: string }) {
-  return <div className={cx('mx-auto min-h-screen w-full max-w-[480px] px-5', className)}>{children}</div>;
+  return <div className={cx('mx-auto min-h-dvh w-full max-w-[480px] px-5', className)}>{children}</div>;
 }
 
 /** The signed-out pages, drawn like the reference's Welcome screen. */

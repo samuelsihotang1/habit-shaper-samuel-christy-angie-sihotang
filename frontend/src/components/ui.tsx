@@ -129,6 +129,7 @@ export function TextField({
   const id = useId();
   const [reveal, setReveal] = useState(false);
   const isPassword = type === 'password';
+  const isDate = type === 'date';
 
   return (
     <FieldFrame id={id} label={label} error={error} hint={hint} className={className}>
@@ -139,8 +140,10 @@ export function TextField({
           type={isPassword && reveal ? 'text' : type}
           aria-invalid={error ? true : undefined}
           aria-describedby={error ? `${id}-error` : undefined}
-          className={cx(fieldClass(error), 'rounded-full px-5', isPassword && 'pr-20')}
+          className={cx(fieldClass(error), 'rounded-full px-5', isPassword && 'pr-20', isDate && 'pr-14')}
         />
+        {/* The browser's own picker button sits invisible over this icon (index.css). */}
+        {isDate && <Icon name="calendar" className="pointer-events-none absolute top-1/2 right-5 size-5 -translate-y-1/2 text-ink-muted" />}
         {isPassword && (
           <button
             type="button"

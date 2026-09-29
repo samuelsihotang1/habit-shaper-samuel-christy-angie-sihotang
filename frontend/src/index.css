@@ -50,6 +50,31 @@ body {
   @apply bg-canvas font-sans text-base text-ink antialiased;
 }
 
+/*
+ * A date field's own picker button, stretched invisible over the calendar icon
+ * TextField draws: Android Chrome draws it as a chevron. It stays clickable, so
+ * desktop Chrome still opens the picker from the icon. Its containing block is
+ * TextField's `relative` wrapper. Firefox draws its own icon and has no pseudo-element for it.
+ */
+input[type='date']::-webkit-calendar-picker-indicator {
+  position: absolute;
+  inset: 0 0 0 auto;
+  width: 3.5rem;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* Android Chrome draws a date field as a dropdown, with a chevron of its own beside the icon. */
+input[type='date'] {
+  appearance: none;
+}
+
+/* WebKit centres a date's value; every other field is left-aligned. */
+input[type='date']::-webkit-date-and-time-value {
+  text-align: left;
+}
+
 :focus-visible {
   @apply outline-2 outline-offset-2 outline-ink;
 }

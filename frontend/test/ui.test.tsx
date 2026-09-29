@@ -1,9 +1,10 @@
 import { act } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
-import { MemoryRouter } from 'react-router';
+import { Link, MemoryRouter, NavigationType, Route, Routes, useNavigate } from 'react-router';
+import { ScrollToTop, shouldResetScroll } from '@/components/ScrollToTop';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { HabitBubble } from '@/components/icons';
-import { Logo } from '@/components/Shells';
+import { AppShell, Logo } from '@/components/Shells';
 import { ConfirmDialog, TextArea, TextField } from '@/components/ui';
 import './support';
 
@@ -71,6 +72,79 @@ describe('field shapes', () => {
     );
     expect(radii(container.querySelector('input')!)).toEqual(['rounded-full']);
     expect(radii(container.querySelector('textarea')!)).toEqual(['rounded-2xl']);
+  });
+});
+
+describe('date field', () => {
+  it('draws a calendar icon in place of the browser\'s picker arrow', () => {
+    act(() => root.render(<TextField label="Start date" type="date" />));
+    expect(container.querySelectorAll('svg')).toHaveLength(1);
+    expect(container.querySelector('input')!.classList).toContain('pr-14');
+
+    act(() => root.render(<TextField label="Name" />));
+    expect(container.querySelectorAll('svg')).toHaveLength(0);
+  });
+});
+
+describe('page height', () => {
+  it('is the visible viewport, so a short page does not scroll under a phone\'s address bar', () => {
+    act(() =>
+      root.render(
+        <MemoryRouter>
+          <Routes>
+            <Route element={<AppShell />}>
+              <Route path="/" element={<p>page</p>} />
+            </Route>
+          </Routes>
+        </MemoryRouter>,
+      ),
+    );
+    const column = container.firstElementChild!;
+    expect(column.classList).toContain('min-h-dvh');
+    expect(column.classList).not.toContain('min-h-screen');
+  });
+});
+
+describe('scroll to top', () => {
+  afterEach(() => vi.restoreAllMocks());
+
+  it('resets on a new path, not on the same path or on Back', () => {
+    expect(shouldResetScroll('/', '/habits/1', NavigationType.Push)).toBe(true);
+    expect(shouldResetScroll('/', '/habits/1', NavigationType.Replace)).toBe(true);
+    expect(shouldResetScroll('/habits/1', '/habits/1', NavigationType.Push)).toBe(false);
+    expect(shouldResetScroll('/habits/1', '/', NavigationType.Pop)).toBe(false);
+  });
+
+  function Nav() {
+    const navigate = useNavigate();
+    return (
+      <>
+        <Link to="/b">next</Link>
+        <button type="button" onClick={() => void navigate(-1)}>
+          back
+        </button>
+      </>
+    );
+  }
+
+  it('opens a new page at the top and leaves Back to the browser', () => {
+    const scrollTo = vi.spyOn(window, 'scrollTo').mockImplementation(() => {});
+    act(() =>
+      root.render(
+        <MemoryRouter initialEntries={['/a']}>
+          <ScrollToTop />
+          <Nav />
+        </MemoryRouter>,
+      ),
+    );
+    expect(scrollTo).not.toHaveBeenCalled();
+
+    act(() => container.querySelector('a')!.click());
+    expect(scrollTo).toHaveBeenCalledWith(0, 0);
+
+    scrollTo.mockClear();
+    act(() => container.querySelector('button')!.click());
+    expect(scrollTo).not.toHaveBeenCalled();
   });
 });
 

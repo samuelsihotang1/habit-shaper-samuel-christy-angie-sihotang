@@ -31,7 +31,7 @@ export function HabitsPage() {
   const shownError = error ?? (habits ? null : (loadError?.message ?? null));
 
   return (
-    <div className="flex min-h-[calc(100vh-4rem)] flex-col">
+    <div className="flex min-h-[calc(100dvh-4rem)] flex-col">
       <PageHeader title="Manage habits" back="/settings" />
       {shownError ? <Alert>{shownError}</Alert> : null}
 
