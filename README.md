@@ -9,6 +9,13 @@ Fastify + `@fastify/mysql` (backend) · MySQL 9.7 · Docker Compose.
 
 ---
 
+## Use it now
+
+The app is live at **https://habit.samz.my.id/**. Open it, create an account
+with an email address and a password, and start: there is nothing to install
+and no email to confirm. The demo account below is for a copy you run
+yourself.
+
 ## Run it
 
 The only requirement is **Docker with the Compose plugin** (Docker Desktop, or

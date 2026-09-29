@@ -87,3 +87,21 @@ The agent asked where the local database lives (the local MariaDB on
 
 Verified: 91 backend and 34 frontend tests; the whole brief end to end on a
 fresh checkout (`03-statistics-demo-review.md`).
+
+---
+
+## Phase 4: delivery
+
+| # | Request | What the agent did | Commit |
+|---|---|---|---|
+| 1 | The goal form should offer a week, two weeks, a month and three months as targets | `PRESETS` on the goal form; the Days field still takes any target from 1 to 3650 | `feat(goals): offer 7, 14, 30 and 90 day targets` |
+| 2 | Tell anyone who installs the app how to sign in to the demo account | A "Try the demo account" section in `README.md`, with the command for bash and for Windows PowerShell; the same pass documented `REDIS_PASSWORD` and `REDIS_URL` | `docs: show how to sign in to the demo account, and the Redis variables` |
+| 3 | The Notes field is drawn as a pill | A multi-line field has the 16px tile corner, as the design system says | `fix(frontend): give the Notes textarea …` |
+| 4 | A brand guideline for Habit Shaper, in English, with the files to use | `docs/brand/`: logo rules and SVG lockups, the palette with computed contrast, type, voice, a share image and app icons; the wordmark on white became ink throughout | `docs(brand): add brand guidelines, logo, share image and app icons` |
+| 5 | Every colour pair must pass WCAG AA | Darkened the danger, success and three accent colours, added `line-strong` for field borders; `contrast.test.ts` checks every pair the app draws | `fix(a11y): bring every colour pair to WCAG AA contrast` |
+| 6 | On a phone a short page still scrolls, the date fields look foreign, and a new page opens scrolled down | `dvh` heights, a calendar icon over the native picker, and a scroll to the top on every new path | `fix(frontend): fit pages to the visible viewport, …` |
+| 7 | A new logo: an H that reads as fast | Three options drawn; the chosen one, two leaning strokes with sharp tips, replaced the mark everywhere, with a test holding the app and the favicon to the same paths | `feat(brand): new H mark, two leaning strokes with sharp tips` |
+| 8 | Let anyone use the app without installing it | `README.md` opens with the live app at https://habit.samz.my.id/ | `docs: open the README with the live app at habit.samz.my.id` |
+
+Verified: 91 backend and 65 frontend tests, typecheck and build clean; the
+live site serves the new mark and the share image.
