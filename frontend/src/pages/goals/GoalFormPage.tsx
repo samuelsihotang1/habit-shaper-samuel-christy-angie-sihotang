@@ -7,7 +7,7 @@ import { useHabits } from '@/hooks/useHabits';
 import { ApiError } from '@/services/api';
 import type { Goal, Habit } from '@/types/habits';
 
-const PRESETS = [7, 21, 30, 66, 90];
+const PRESETS = [7, 14, 30, 90];
 
 const FIELDS = ['habit_id', 'title', 'target_days', 'notes'];
 
