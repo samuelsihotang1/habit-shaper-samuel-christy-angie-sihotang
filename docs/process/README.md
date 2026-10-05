@@ -26,4 +26,4 @@ it was verified; `git log` is the long form of this table.
 | 1 | Documentation system, the Fastify and React skills, the design system, authentication (email-first sign-in, TOTP two-factor, reset by authenticator), Docker Compose | `01-auth-foundation-plan.md` | 53 backend + 19 frontend tests |
 | 2 | Habits, check-ins, streaks, weekly rate, goals, and their screens | `02-habits-plan.md` | 86 backend + 32 frontend tests |
 | 3 | Week / Month / Year statistics, demo data, the audit against the brief | `03-statistics-demo-review.md` | 91 backend + 34 frontend tests |
-| 4 | Delivery: goal presets, the demo sign-in in the README, brand guidelines and a new logo, WCAG AA contrast, phone viewport fixes, the live app | `sessions.md` | 91 backend + 65 frontend tests |
+| 4 | Delivery: goal presets, the demo sign-in in the README, brand guidelines and a new logo, WCAG AA contrast, phone viewport fixes, the live app, the ERD and system diagrams | `sessions.md` | 91 backend + 65 frontend tests |

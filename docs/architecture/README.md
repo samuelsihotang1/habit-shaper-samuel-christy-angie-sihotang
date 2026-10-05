@@ -4,12 +4,64 @@ How Habit Shaper is built. Start here, then read the one file your task needs.
 
 | File | Covers |
 |---|---|
-| `README.md` | stack, repository layout, known gaps |
-| `api.md` | the envelope, error codes, `api.ts`, sessions, MFA, every route |
+| `README.md` | the system diagram, stack, repository layout, known gaps |
+| `schema.md` | the ERD: tables, relations, cardinalities, indexes, what no constraint enforces |
+| `api.md` | the envelope, error codes, `api.ts`, the request lifecycle, sessions, MFA, every route |
 | `habits.md` | habits, check-ins, streaks, weekly rate, goals |
-| `deployment.md` | compose, images, environment variables, migrations on boot, nginx |
+| `deployment.md` | containers, start order, secrets, images, environment variables, migrations on boot, nginx |
 | `../decisions.md` | why things are the way they are |
-| `../security.md` | the threat model and what tests pin it |
+| `../security.md` | the threat model, where each control sits, rate limits, and what tests pin it |
+
+---
+
+## The system at a glance
+
+How the browser, the frontend, the backend and the two stores fit together.
+The browser only ever talks to nginx, and nginx is the only way in to the
+backend. The container view, with ports, volumes and start order, is
+`deployment.md`; one request's path through the backend is `api.md`.
+
+```mermaid
+flowchart TB
+    subgraph browser["Browser: the SPA"]
+        pages["pages/<br/>one folder per area"] --> hooks["hooks/<br/>useHabits · useGoals · useStats · useDevices<br/>SWR cache, keyed by endpoint"]
+        hooks --> services["services/<br/>one file per API area"]
+        services --> apits["services/api.ts<br/>the only fetch: Bearer header,<br/>envelope unwrap, 401 event"]
+        pages --> auth["useAuth<br/>the session the cookie holds"]
+        auth <--> cookies[("cookies<br/>auth_key: v, user, token<br/>device_token")]
+        apits -. "reads the token" .-> cookies
+        apits -. "auth:unauthorized" .-> auth
+    end
+
+    subgraph nginx["frontend container: nginx, the one origin"]
+        static["/ and /assets/*<br/>dist/ from the Vite build,<br/>any other path is index.html"]
+        proxy["/api/*<br/>proxy_pass backend:3000"]
+    end
+
+    subgraph api["backend container: Fastify, :3000"]
+        plugins["plugins/<br/>under-pressure · helmet · authenticate ·<br/>rate-limit · errors · compress"] --> routes["modules/*/routes.ts<br/>schema + limits"]
+        routes --> svc["modules/*/service.ts<br/>every rule, every transaction"]
+        svc --> repo["modules/*/repository.ts<br/>every query, tenant filter included"]
+        routes --> ser["modules/*/serialize.ts<br/>the only response shapes"]
+    end
+
+    db[("MySQL 9.7: habit_shaper<br/>schema.md")]
+    redis[("Redis 8.10<br/>rate-limit counters")]
+
+    pages -. "loaded from" .-> static
+    apits -- "fetch /api/*<br/>Authorization: Bearer token" --> proxy
+    proxy -- "X-Forwarded-For" --> plugins
+    repo -- "mysql2 pool, ? placeholders" --> db
+    plugins -- "one counter per bucket" --> redis
+```
+
+| Part | Owns | Never does |
+|---|---|---|
+| SPA | screens, the cookie, the SWR cache, the route guards (a UX hint) | decide access; the API does |
+| nginx | the one origin, the static files, security headers, `X-Forwarded-For` | answer an API call itself |
+| Backend | authentication, rate limits, validation, every rule, tenant scoping, response shapes | publish its port, or send a database row |
+| MySQL | every user row (`schema.md`) | hold a plaintext password, token or MFA secret |
+| Redis | rate-limit counters, nothing else | persist: a restart empties it, by design |
 
 ---
 

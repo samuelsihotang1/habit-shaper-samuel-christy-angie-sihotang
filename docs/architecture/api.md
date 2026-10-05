@@ -68,14 +68,39 @@ that cache by the area's hook.
 
 ## Sessions
 
+A token is `<row id>|<secret>`: `AccountService.issueToken` writes a row in
+`access_tokens` holding `sha256(secret)`, and the client keeps `{ v, user, token }`
+as one JSON cookie, `auth_key`. Every later request carries it:
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant S as SPA, api.ts
+    participant A as authenticate hook
+    participant D as MySQL
+    S->>A: any authenticated route, Authorization: Bearer id|secret
+    A->>A: splitToken, a malformed header is a 401 here
+    A->>D: SELECT access_tokens JOIN users WHERE access_tokens.id = ?
+    alt no row, or sha256 of the secret differs
+        A-->>S: 401 auth.unauthenticated
+        S->>S: auth:unauthorized event, useAuth drops the cookie and the SWR cache, then /login
+    else the hashes match
+        opt last_used_at is over a minute old
+            A->>D: UPDATE access_tokens SET last_used_at
+        end
+        A->>A: request.auth = user and tokenId, the handler runs
+    end
 ```
-POST /register or /login (or /auth/mfa)
-  → AccountService.issueToken: row in access_tokens, token = "<row id>|<secret>"
-  → the client stores { user, token } as ONE JSON cookie "auth_key"
-  → every later request: Authorization: Bearer <token>
-  → authenticate(): find the row by id, compare sha256(secret), set request.auth
-401 anywhere → api.ts dispatches "auth:unauthorized" → useAuth drops the cookie and the SWR cache → /login
-```
+
+What ends a session, a trusted device, or a challenge in flight:
+
+| Event | `access_tokens` | `trusted_devices` | Unanswered MFA challenges |
+|---|---|---|---|
+| `POST /logout` | the one it was sent with | | |
+| `PUT /account/password` | every one but this | | dead: the password fingerprint changed |
+| `POST /auth/password/reset` | all | all | dead, same reason |
+| `POST /account/mfa/disable` | | all | dead: `/auth/mfa` needs MFA on |
+| Forget one device / all devices | | that one / all | |
 
 - **A session never expires.** There is no expiry column and no age check;
   a token dies only on logout, password change (all others), or password
@@ -92,16 +117,41 @@ POST /register or /login (or /auth/mfa)
 
 ### Email-first sign-in
 
-```
-POST /auth/identify { email }        → { exists }
-  false → the form offers /signup?email=…
-  true  → the password step
-POST /login { email, password, device_token? }
-  MFA off                     → { user, token }
-  MFA on, trusted device      → { user, token }
-  MFA on, otherwise           → { mfa_required: true, challenge }   ← no token
-POST /auth/mfa { challenge, code, trust_device? }
-                              → { user, token, device_token? }
+```mermaid
+sequenceDiagram
+    autonumber
+    actor P as Person
+    participant S as SPA, /login
+    participant A as API
+    participant D as MySQL
+    P->>S: email
+    S->>A: POST /auth/identify with email
+    A->>D: user by email
+    A-->>S: exists true or false
+    alt exists is false
+        S-->>P: the form offers /signup?email=…
+    else exists is true
+        P->>S: password
+        S->>A: POST /login with email, password, device_token from its cookie if any
+        A->>D: user by email
+        A->>A: argon2id verify, against a dummy hash when there is no user
+        alt wrong password or unknown email
+            A-->>S: 422 auth.invalidCredentials, the same answer for both
+        else MFA off, or device_token matches a trusted_devices row of this user
+            A->>D: INSERT access_tokens, touch the trusted device
+            A-->>S: user and token
+        else MFA on and this browser is not trusted
+            A->>A: seal a challenge with APP_KEY: uid, time, password fingerprint
+            A-->>S: mfa_required and challenge, no token
+            P->>S: six-digit code, and "trust this browser" if ticked
+            S->>A: POST /auth/mfa with challenge, code, trust_device
+            A->>A: open the challenge: genuine, under 5 minutes, fingerprint still matches
+            A->>D: UPDATE users SET mfa_last_counter WHERE it is older than this step
+            A->>D: INSERT access_tokens, and trusted_devices if asked
+            A-->>S: user, token, and device_token if asked
+        end
+        S->>S: cookie auth_key holds v, user, token, and cookie device_token if one came
+    end
 ```
 
 `identify` tells anyone whether an address is registered. Accepted: the form
@@ -128,13 +178,47 @@ cannot choose its next screen otherwise (`docs/security.md` §2).
 - **Turning MFA off** needs the password *and* a code, so a stolen session
   alone cannot remove the second factor.
 
+The MFA columns of `users` move through three states. A setup that was
+started and never confirmed leaves sign-in as it was: MFA is off until
+`mfa_confirmed_at` is set.
+
+```mermaid
+stateDiagram-v2
+    direction LR
+    Off: Off, mfa_secret and mfa_confirmed_at NULL
+    Pending: Setup started, mfa_secret set, mfa_confirmed_at NULL
+    On: On, mfa_confirmed_at set
+    [*] --> Off: register
+    Off --> Pending: POST /account/mfa/setup
+    Pending --> Pending: setup again, a new secret
+    Pending --> On: POST /account/mfa/confirm, a valid code
+    On --> Off: POST /account/mfa/disable, password and code, every trusted device deleted
+```
+
+| Call in the wrong state | Answer |
+|---|---|
+| setup or confirm while On | 422 `mfa.alreadyEnabled` |
+| confirm while Off | 422 `mfa.notStarted` |
+| disable while Off or Pending | 422 `mfa.notEnabled` |
+
 ### Password reset, proven by the authenticator
 
-```
-POST /auth/password/reset { email, code, password, password_confirmation }
-  no account, or MFA off   → 422 auth.resetNeedsMfa
-  wrong / used code        → 422 mfa.badCode
-  ok → new hash; every access token and trusted device of the user deleted
+```mermaid
+sequenceDiagram
+    autonumber
+    participant S as SPA, /forgot-password
+    participant A as API
+    participant D as MySQL
+    S->>A: POST /auth/password/reset with email, code, password, password_confirmation
+    A->>D: user by email
+    alt no account, or MFA off
+        A-->>S: 422 auth.resetNeedsMfa
+    else the code is wrong, outside one step, or already used
+        A-->>S: 422 mfa.badCode
+    else the code is accepted and burnt
+        A->>D: one transaction: new password_hash, DELETE every access_tokens and trusted_devices row of the user
+        A-->>S: 200, sign in again, with MFA
+    end
 ```
 
 There is no email in this stack, so an authenticator code is the only proof
@@ -153,6 +237,44 @@ service.ts         every rule and every transaction
 repository.ts      every query, tenant filter included
 plugins/errors.ts  refusal / ValidationFailed / Fastify 4xx / anything else → the envelope
 ```
+
+### One request, end to end
+
+Fastify's lifecycle stages, top to bottom, with the hook this app puts on
+each. Any refusal on the way is thrown, and `plugins/errors.ts` turns it into
+the envelope.
+
+```mermaid
+flowchart TD
+    nginx(["nginx: /api/* with X-Forwarded-For"]) --> pressure["onRequest, every request:<br/>under-pressure, event loop, heap or RSS too high?"]
+    pressure -- "yes" --> e503["503 http.unavailable, Retry-After 10"]
+    pressure -- "no" --> helmet["onRequest, every request: helmet sets the security headers"]
+    helmet --> match["a route matches?"]
+    match -- "no" --> e404["404 http.notFound"]
+    match -- "yes" --> scope["inside an authenticated scope?"]
+    scope -- "yes" --> authn["onRequest: app.authenticate<br/>Bearer token valid?"]
+    authn -- "no" --> e401["401 auth.unauthenticated, before the body is read"]
+    authn -- "yes" --> parse
+    scope -- "no" --> parse
+    parse["body parses as JSON, under 64 KiB?"]
+    parse -- "no" --> e4xx["400 or 413 http.badRequest"]
+    parse -- "yes" --> early["preValidation: buckets keyed by IP or user,<br/>any of them full?"]
+    early -- "yes" --> e429["429 http.throttled, Retry-After"]
+    early -- "no" --> valid["validation: TypeBox schema via Ajv,<br/>params, querystring, body valid?"]
+    valid -- "no" --> e422["422 validation.failed with errors and failures"]
+    valid -- "yes" --> late["preHandler: buckets keyed by a body field,<br/>any of them full?"]
+    late -- "yes" --> e429
+    late -- "no" --> handler["handler: app.services.area, the service applies every rule,<br/>the repository runs SQL with the userId in the WHERE"]
+    handler --> refusal["the service refused?"]
+    refusal -- "yes" --> e4xxr["the refusal's status and code, e.g. 404 http.notFound for a stranger's row"]
+    refusal -- "no" --> serialize["serialize.ts shapes the answer, ok wraps it in the envelope,<br/>the response schema drops any key it does not list"]
+    serialize --> compress["onSend: gzip or deflate over 1 KiB"]
+    compress --> out(["back to nginx"])
+    handler -. "anything unexpected" .-> e500["500 http.serverError, the error only in the log"]
+```
+
+Two timeouts sit outside the diagram: a request still unfinished after 30
+seconds is dropped, and on shutdown requests in flight get 10 seconds.
 
 ---
 
@@ -180,7 +302,7 @@ plugins/errors.ts  refusal / ValidationFailed / Fastify 4xx / anything else → 
 | `GET /account/devices` | trusted devices, most recently used first |
 | `DELETE /account/devices/all` · `/account/devices/:id` | scoped by user in the same query; a stranger's id is 404 |
 
-**Habits, goals and statistics (`authenticate`)**. Every one takes `?tz=` (`habits.md`); writes share 120/min per user.
+**Habits, goals and statistics (`authenticate`)**. Every one takes `?tz=` (`habits.md`); writes spend 120/min per user, one bucket for habits and another for goals (`docs/security.md` §4).
 
 | Path | Notes |
 |---|---|

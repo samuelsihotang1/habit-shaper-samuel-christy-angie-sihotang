@@ -75,7 +75,8 @@ service function in `frontend/src/services/`.
 
 **A column**: a new `backend/migrations/NNNN_<what>.sql` (never edit one that
 has run) → the repository's column list and row type → the serializer, if the
-client needs it → the type in `frontend/src/types/`.
+client needs it → the type in `frontend/src/types/` → the ERD in
+`docs/architecture/schema.md`.
 
 **A signed-in page**: `pages/<area>/<Name>Page.tsx`, reading through a hook
 in `hooks/` → a `React.lazy` export in `pages/lazy.ts` (and a `byPath` entry if

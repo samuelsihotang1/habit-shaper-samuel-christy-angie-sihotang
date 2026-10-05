@@ -78,3 +78,106 @@ MFA account.
 
 Nothing needs one today (no inline scripts, escaped output), but a CSP would
 turn a future XSS into a blocked request. It belongs in `frontend/nginx.conf`.
+
+---
+
+## 3. Where each control sits
+
+Every layer a request crosses, and what it holds against. Only the backend is
+a trust boundary; the browser's controls protect the user, not the API.
+
+```mermaid
+flowchart LR
+    subgraph client["Browser, untrusted"]
+        direction TB
+        c1["auth_key cookie: JS-readable,<br/>SameSite Lax, Secure over HTTPS"] ~~~ c2["route guards: a UX hint only"]
+        c2 ~~~ c3["React escapes text,<br/>no dangerouslySetInnerHTML"]
+        c3 ~~~ c4["the MFA QR code is drawn locally"]
+        c4 ~~~ c5["sign-out and any 401<br/>empty the SWR cache"]
+    end
+    subgraph edge["nginx"]
+        direction TB
+        n1["X-Frame-Options DENY, nosniff,<br/>Referrer-Policy on every answer"] ~~~ n2["client_max_body_size 1m on /api"]
+        n2 ~~~ n3["X-Forwarded-For,<br/>the visitor's IP"]
+    end
+    subgraph api["Backend, the trust boundary"]
+        direction TB
+        b1["under-pressure:<br/>503 instead of queueing"] ~~~ b2["helmet: the same headers and a CSP"]
+        b2 ~~~ b3["authenticate: opaque token,<br/>sha256 at rest"]
+        b3 ~~~ b4["rate limits, counted in Redis"]
+        b4 ~~~ b5["Ajv: every input against a schema,<br/>64 KiB body, 200-character passwords"]
+        b5 ~~~ b6["services: userId in every WHERE,<br/>MFA, argon2id, single-use TOTP steps"]
+        b6 ~~~ b7["serializers: no database row leaves"]
+        b7 ~~~ b8["errors: a flat 500,<br/>Pino redacts credentials"]
+    end
+    subgraph rest["At rest"]
+        direction TB
+        s1[("MySQL: argon2id password hashes,<br/>sha256 token hashes,<br/>AES-256-GCM MFA secrets")] ~~~ s2[("secrets volume: APP_KEY,<br/>MySQL and Redis passwords")]
+    end
+    client -- "Bearer token,<br/>one origin" --> edge --> api --> rest
+```
+
+## 4. Rate limits
+
+A route lists the buckets it spends (`config.limits`); `plugins/rate-limit.ts`
+counts them in two stages. Every bucket of a stage is counted before any
+refuses, so a full bucket never hides another's count, and the 429 waits for
+the fullest one.
+
+```mermaid
+flowchart TD
+    req(["a request to a route with config.limits"]) --> early{"preValidation:<br/>count every bucket keyed by IP or user"}
+    early -- "all under max" --> valid["schema validation"]
+    early -- "one or more full" --> e429["429 http.throttled<br/>Retry-After: the longest wait of the full buckets"]
+    valid --> late{"preHandler:<br/>count every bucket keyed by a body field"}
+    late -- "all under max" --> handler["handler"]
+    late -- "one or more full" --> e429
+    early <-. "INCR, window starts at the first hit" .-> redis[("Redis database 0<br/>keys under habit-shaper:limit:")]
+    late <-. "INCR, window starts at the first hit" .-> redis
+```
+
+Counting IP buckets before validation means a malformed request still spends
+one; a bucket keyed by email or challenge needs the validated body, so it
+counts after.
+
+| Bucket | Routes | Max per window | Key | Stage |
+|---|---|---|---|---|
+| `identify` | `POST /auth/identify` | 20 / minute | IP | preValidation |
+| `register` | `POST /register` | 20 / hour | IP | preValidation |
+| `login-ip` | `POST /login` | 60 / minute | IP | preValidation |
+| `login` | `POST /login` | 5 / minute | email + IP | preHandler |
+| `login-email` | `POST /login` | 10 / 15 minutes | email | preHandler |
+| `mfa` | `POST /auth/mfa` | 10 / minute | IP | preValidation |
+| `mfa-challenge` | `POST /auth/mfa` | 5 / 5 minutes | the challenge's last 32 characters | preHandler |
+| `reset` | `POST /auth/password/reset` | 5 / 15 minutes | email + IP | preHandler |
+| `reset-email` | `POST /auth/password/reset` | 10 / hour | email | preHandler |
+| `password` | `PUT /account/password` | 10 / minute | user | preValidation |
+| `account-mfa` | `POST /account/mfa/setup`, `/confirm`, `/disable` | 10 / minute, shared | user | preValidation |
+| `habits-writes` | every `POST`, `PUT`, `DELETE` under `/habits` | 120 / minute, shared | user | preValidation |
+| `goals-writes` | every `POST`, `PUT`, `DELETE` under `/goals` | 120 / minute, shared | user | preValidation |
+
+A user-keyed bucket counts after `authenticate`, so an anonymous request is
+a 401 and spends nothing. Outside Docker the same buckets count in process
+memory (`RULES.md` §6).
+
+## 5. Keys and what they protect
+
+```mermaid
+flowchart LR
+    appkey["APP_KEY<br/>secrets volume, or backend/.env"] -- "sha256" --> aes["AES-256-GCM key<br/>random 12-byte IV per seal"]
+    aes -- "seals, stored" --> mfasecret[("users.mfa_secret")]
+    aes -- "seals, never stored,<br/>dies after 5 minutes" --> challenge["sign-in challenge<br/>uid, at, pw"]
+    password["password, at most 200 characters"] -- "argon2id, 64 MiB, 3 passes, 4 lanes" --> pwhash[("users.password_hash")]
+    pwhash -- "sha256, first 16 hex characters" --> challenge
+    mfasecret -- "decrypted for each check:<br/>HMAC-SHA1, 30-second steps, 6 digits, ±1 step" --> code["a TOTP code"]
+    code -- "its step, burnt once" --> counter[("users.mfa_last_counter")]
+    session["session secret, 30 random bytes"] -- "sha256" --> tokenhash[("access_tokens.token_hash")]
+    device["device secret, 30 random bytes"] -- "sha256" --> devicehash[("trusted_devices.token_hash")]
+```
+
+| Lost or leaked | Consequence |
+|---|---|
+| `APP_KEY` lost or changed | every MFA account is locked out, sign-in and reset alike (§2.5) |
+| `APP_KEY` leaked together with the database | MFA secrets readable and challenges forgeable from the stored hash, which together sign in to an MFA account without its password. `APP_KEY` has no rotation path yet (`architecture/README.md`, Known gaps) |
+| The database alone | no usable session or device token, no MFA secret; each password must be cracked against argon2id |
+| One browser's `auth_key` cookie | that session until logout, a password change or a reset (§2.3) |

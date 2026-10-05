@@ -42,6 +42,8 @@ plugins/                     autoloaded, each `fp()` with a `name` and its `depe
 - Every table is snake_case plural, with uuid `CHAR(36)` ids made by
   `randomUUID()`, and `created_at`/`updated_at` where rows change. The backend
   writes every `DATETIME`, in UTC; `DATE` columns are `YYYY-MM-DD` strings.
+- A migration that adds or drops a table, a column, a foreign key or an index
+  redraws the ERD in `docs/architecture/schema.md` in the same change.
 
 ### Rate limits
 

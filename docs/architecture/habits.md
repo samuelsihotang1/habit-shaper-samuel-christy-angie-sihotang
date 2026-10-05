@@ -8,6 +8,8 @@ are in `api.md`; the pure logic is `backend/src/lib/streaks.ts` and
 
 ## The model
 
+The columns, keys and cardinalities are the ERD in `schema.md`.
+
 | Table | Holds |
 |---|---|
 | `habits` | `user_id`, `name`, `type` (`build` \| `break`), `icon`, `started_on` (date), `archived_at?` |

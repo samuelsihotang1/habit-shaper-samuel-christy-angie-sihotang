@@ -154,8 +154,10 @@ npm test
 | For | Read |
 |---|---|
 | Anyone changing the code, human or AI | [`CLAUDE.md`](CLAUDE.md), the map of the rest |
+| How the browser, frontend, backend and database fit together | [`docs/architecture/README.md`](docs/architecture/README.md) |
+| The tables and their relations (ERD) | [`docs/architecture/schema.md`](docs/architecture/schema.md) |
 | The API, sessions and two-factor | [`docs/architecture/api.md`](docs/architecture/api.md) |
-| Containers and environment | [`docs/architecture/deployment.md`](docs/architecture/deployment.md) |
+| Containers, start order, secrets and environment | [`docs/architecture/deployment.md`](docs/architecture/deployment.md) |
 | Why things are the way they are | [`docs/decisions.md`](docs/decisions.md) |
 | Security model | [`docs/security.md`](docs/security.md) |
 | How the project was built, step by step | [`docs/process/`](docs/process/) |

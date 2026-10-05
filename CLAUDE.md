@@ -51,8 +51,9 @@ One row, not the folder.
 | before your first edit, whatever it is | `RULES.md` §1 |
 | an endpoint, the envelope, an error code, auth, MFA, sessions | `docs/architecture/api.md` |
 | habits, check-ins, streaks, weekly rate, goals | `docs/architecture/habits.md` |
-| compose, Dockerfiles, env vars, migrations on boot, nginx | `docs/architecture/deployment.md` |
-| stack, repository layout, known gaps | `docs/architecture/README.md` |
+| a table, a relation, an index (the ERD) | `docs/architecture/schema.md` |
+| compose, Dockerfiles, env vars, secrets, start order, migrations on boot, nginx | `docs/architecture/deployment.md` |
+| the system diagram, stack, repository layout, known gaps | `docs/architecture/README.md` |
 | colour, spacing, components, states | `docs/design/README.md` |
 | the logo, brand voice, a brand asset or share image | `docs/brand/README.md` |
 | a threat, a rate limit, what the API must never send | `docs/security.md` |
@@ -65,7 +66,9 @@ One row, not the folder.
 into it: a comment saying `RULES.md §6` means open that section. Grep the
 heading, read the section, stop.
 
-There is no schema document. The schema is `backend/migrations/*.sql`, in order.
+The schema is `backend/migrations/*.sql`, in order. `docs/architecture/schema.md`
+is its ERD; a migration that changes a table updates it, and where the two
+disagree the migrations win.
 
 **If the docs and the code disagree, the code wins.** Then fix the doc.
 

@@ -16,9 +16,67 @@ Docker with the Compose plugin.
 | `frontend` | `frontend/Dockerfile` (nginx) | `${APP_PORT:-8080}` → 80 | the SPA, and `/api/*` proxied to `backend:3000` |
 | `backend-test` | `backend/Dockerfile`, stage `test` | none | profile `test`; only `docker compose run` starts it |
 
-Start order is enforced by `depends_on`: `secrets` completed → `db` healthy
-(TCP ping) and `redis` healthy (`PING`) → `backend` healthy (`GET /api/health`, which queries MySQL) →
-`frontend`.
+### Containers, ports and volumes
+
+```mermaid
+flowchart TB
+    visitor(["Browser"])
+    hostproxy["host reverse proxy, optional<br/>terminates HTTPS"]
+
+    subgraph compose["compose project habit-shaper, one default network"]
+        frontend["frontend<br/>nginx:1.30-alpine, :80"]
+        backend["backend<br/>node:24-trixie-slim, :3000"]
+        db[("db<br/>mysql:9.7, :3306")]
+        redis[("redis<br/>redis:8.10-alpine, :6379<br/>no persistence")]
+        secrets["secrets<br/>alpine:3.24, one-shot"]
+        tests["backend-test<br/>profile test"]
+    end
+
+    dbdata[("volume db-data")]
+    secretsvol[("volume secrets")]
+    init["./db/init<br/>runs on an empty db-data only"]
+    env["backend/.env<br/>optional"]
+
+    visitor -- "HTTPS" --> hostproxy -- "HTTP, host port APP_PORT" --> frontend
+    visitor -. "HTTP, host port APP_PORT" .-> frontend
+    frontend -- "/api/* to backend:3000" --> backend
+    backend -- "habit_shaper" --> db
+    backend -- "database 0" --> redis
+    tests -- "habit_shaper_test" --> db
+    tests -- "database 1" --> redis
+    db --- dbdata
+    init -.-> db
+    env -. "env_file" .-> secrets
+    env -. "env_file" .-> backend
+    secrets -- "writes" --> secretsvol
+    secretsvol -.-> db & redis & backend & tests
+```
+
+Only `frontend` publishes a port. `db`, `redis` and `backend` are reachable
+from the compose network alone, by service name. The dotted arrows out of the
+`secrets` volume are read-only mounts; which file each service reads is the
+table under Environment variables. The backend connects as `MYSQL_USER`, the
+suite as root.
+
+### Start order
+
+`depends_on` enforces it; each arrow waits for the condition on it.
+
+```mermaid
+flowchart LR
+    secrets["secrets<br/>fills the volume"] -- "completed successfully" --> db["db"]
+    secrets -- "completed successfully" --> redis["redis"]
+    db -- "healthy: mysqladmin ping over TCP" --> boot
+    redis -- "healthy: redis-cli PING" --> boot
+    subgraph boot["backend"]
+        direction TB
+        entry["docker-entrypoint.sh<br/>loads each *_FILE into the environment"] --> migrate["src/migrate.ts<br/>GET_LOCK, applies new migrations"] --> server["src/server.ts<br/>loadConfig, buildApp, listen :3000"]
+    end
+    boot -- "healthy: GET /api/health runs SELECT 1" --> frontend["frontend<br/>nginx starts serving"]
+```
+
+A failed migration stops the container before it listens, so `frontend`
+never starts on a half-migrated schema.
 
 **One origin.** The browser only ever talks to nginx, so the API needs no
 CORS and the backend port is never published.
@@ -57,6 +115,28 @@ random one. The other services read files, never the variables: MySQL through
 environment before the stage's `CMD`. Deleting the `secrets` volume without
 `db-data` leaves MySQL on the old passwords and every MFA secret unreadable.
 
+```mermaid
+flowchart TD
+    start(["secrets service, every docker compose up"]) --> each["for app_key, mysql_password,<br/>mysql_root_password, redis_password"]
+    each --> set{"backend/.env<br/>sets it?"}
+    set -- "yes" --> write["write that value"]
+    set -- "no" --> there{"file already in<br/>the volume?"}
+    there -- "yes" --> keep["keep it"]
+    there -- "no" --> random["random hex from /dev/urandom<br/>48 bytes for app_key, 24 for each password"]
+    write & keep & random --> names["mysql_user, mysql_database<br/>from backend/.env or habit / habit_shaper"]
+    names --> urls["database_url, test_database_url,<br/>redis_url, test_redis_url"]
+    urls --> chmod["chmod 0444, exit 0"]
+```
+
+| File in the volume | Read by |
+|---|---|
+| `app_key` | `backend`, `backend-test` (`APP_KEY_FILE`) |
+| `mysql_password`, `mysql_user`, `mysql_database`, `mysql_root_password` | `db` (`MYSQL_*_FILE`), on an empty `db-data` only |
+| `redis_password` | `redis` (`--requirepass`) and its healthcheck |
+| `database_url` | `backend` (`DATABASE_URL_FILE`) |
+| `test_database_url` | `backend-test` (`DATABASE_URL_FILE`), as root, on `habit_shaper_test` |
+| `redis_url`, `test_redis_url` | `backend` (`REDIS_URL_FILE`), `backend-test` (`TEST_REDIS_URL_FILE`) |
+
 | Variable | Default | Used by | Notes |
 |---|---|---|---|
 | `APP_PORT` | `8080` | frontend | host port; the root `.env`, not `frontend/.env` |
@@ -86,6 +166,19 @@ data**) or an `ALTER USER` by hand.
 - **Frontend**: builds with Node, serves `dist/` from `nginx:1.30-alpine`.
   Security headers are set once at `server {}` level; cache headers use
   `expires`, never `add_header` (`RULES.md` §6).
+
+## Outside Docker
+
+```mermaid
+flowchart LR
+    browser(["Browser"]) -- "http://localhost:5173" --> vite["Vite dev server<br/>npm run dev in frontend/"]
+    vite -- "/api to BACKEND_URL,<br/>default http://localhost:3000" --> api["backend<br/>npm run dev in backend/"]
+    api -- "DATABASE_URL from backend/.env" --> mysql[("a MySQL you run")]
+    api -. "REDIS_URL empty:<br/>limits count in process memory" .-> memory["in-memory store"]
+```
+
+Nothing migrates on start here: `npm run migrate` in `backend/` applies new
+migrations first.
 
 ## Behind another reverse proxy
 

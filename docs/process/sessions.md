@@ -102,6 +102,9 @@ fresh checkout (`03-statistics-demo-review.md`).
 | 6 | On a phone a short page still scrolls, the date fields look foreign, and a new page opens scrolled down | `dvh` heights, a calendar icon over the native picker, and a scroll to the top on every new path | `fix(frontend): fit pages to the visible viewport, …` |
 | 7 | A new logo: an H that reads as fast | Three options drawn; the chosen one, two leaning strokes with sharp tips, replaced the mark everywhere, with a test holding the app and the favicon to the same paths | `feat(brand): new H mark, two leaning strokes with sharp tips` |
 | 8 | Let anyone use the app without installing it | `README.md` opens with the live app at https://habit.samz.my.id/ | `docs: open the README with the live app at habit.samz.my.id` |
+| 9 | The repository has no ERD and no system diagram; draw them, and every other diagram the security and infrastructure parts lack | Fourteen Mermaid diagrams written from the code and the migration: the ERD with cardinalities, indexes and the rules no constraint holds (`docs/architecture/schema.md`); the system at a glance (`architecture/README.md`); containers, start order and the secrets volume (`deployment.md`); one request through Fastify, sign-in with MFA, the token check, reset, and the MFA states (`api.md`); where each control sits, the rate-limit buckets, and the keys (`docs/security.md`) | `docs(architecture): add the ERD, the system diagram, and the security and infrastructure flows` |
 
 Verified: 91 backend and 65 frontend tests, typecheck and build clean; the
-live site serves the new mark and the share image.
+live site serves the new mark and the share image. For row 9, every diagram
+parsed by Mermaid 11 and was rendered in Chrome at GitHub's width; no code
+changed, and the frontend suite and both typechecks stayed clean.
